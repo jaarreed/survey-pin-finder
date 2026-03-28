@@ -16,12 +16,11 @@
             height: 100vh;
         }
 
-        #app {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+        /* ==================== SCREENS ==================== */
+        .screen { display: none; flex-direction: column; height: 100vh; }
+        .screen.active { display: flex; }
 
+        /* ==================== HEADER ==================== */
         .header {
             background: #16213e;
             padding: 6px 10px;
@@ -31,104 +30,99 @@
             border-bottom: 1px solid #0f3460;
             flex-shrink: 0;
         }
-
         .header h1 { font-size: 15px; font-weight: 600; color: #e94560; }
         .header-buttons { display: flex; gap: 6px; }
 
+        /* ==================== BUTTONS ==================== */
         .btn {
             background: #0f3460; color: #e0e0e0; border: 1px solid #533483;
             padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
         }
         .btn:hover { background: #533483; }
         .btn.active { background: #e94560; border-color: #e94560; }
-        .btn.primary { background: #e94560; border-color: #e94560; }
+        .btn.primary { background: #e94560; border-color: #e94560; color: #fff; }
+        .btn.success { background: #1b4332; border-color: #4ecca3; color: #4ecca3; }
+        .btn.danger { background: #3d1010; border-color: #e94560; color: #e94560; }
         .btn.small { padding: 3px 7px; font-size: 11px; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* ---- MAP ---- */
-        #map-wrapper {
-            flex: 1 1 auto;
-            position: relative;
-            min-height: 150px;
+        /* ==================== HOME SCREEN ==================== */
+        #screen-home { background: #1a1a2e; }
+        .home-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .property-card {
+            background: #16213e; border: 1px solid #0f3460;
+            border-radius: 8px; padding: 12px; margin-bottom: 8px;
         }
+        .property-card.builtin { border-color: #e94560; }
+        .property-card-title { font-size: 14px; font-weight: 700; color: #e0e0e0; margin-bottom: 2px; }
+        .property-card-sub { font-size: 11px; color: #888; margin-top: 1px; }
+        .property-card-actions { display: flex; gap: 6px; margin-top: 8px; }
+        .home-empty { text-align: center; color: #555; padding: 40px 20px; font-size: 13px; line-height: 1.6; }
+        .home-footer { padding: 10px; flex-shrink: 0; }
+
+        /* ==================== MAP SCREEN ==================== */
+        #map-wrapper { flex: 1 1 auto; position: relative; min-height: 150px; }
         #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 
-        /* ---- BOTTOM PANEL ---- */
+        /* ==================== BOTTOM PANEL ==================== */
         .bottom-panel {
-            background: #16213e;
-            border-top: 2px solid #0f3460;
-            flex-shrink: 0;
-            transition: max-height 0.3s ease;
-            overflow: hidden;
+            background: #16213e; border-top: 2px solid #0f3460;
+            flex-shrink: 0; transition: max-height 0.3s ease; overflow: hidden;
         }
         .bottom-panel.collapsed { max-height: 36px !important; }
-        .bottom-panel.expanded { max-height: 50vh; }
+        .bottom-panel.expanded  { max-height: 55vh; }
 
         .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 4px;
-            height: 36px;
-            cursor: pointer;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 4px; height: 36px; flex-shrink: 0;
         }
-        .panel-tabs { display: flex; gap: 0; flex: 1; }
+        .panel-tabs { display: flex; gap: 0; flex: 1; overflow-x: auto; }
         .panel-tab {
-            padding: 8px 12px; text-align: center; font-size: 12px; font-weight: 500;
-            cursor: pointer; background: transparent; color: #888; border: none;
-            border-bottom: 2px solid transparent;
+            padding: 8px 10px; font-size: 11px; font-weight: 500; cursor: pointer;
+            background: transparent; color: #888; border: none;
+            border-bottom: 2px solid transparent; white-space: nowrap;
         }
         .panel-tab.active { color: #e94560; border-bottom-color: #e94560; }
-
         .collapse-btn {
             background: none; border: none; color: #888; font-size: 18px;
             cursor: pointer; padding: 4px 8px; line-height: 1;
         }
         .collapse-btn:hover { color: #e94560; }
-
-        .panel-body {
-            max-height: calc(50vh - 36px);
-            overflow-y: auto;
-            padding: 8px 10px;
-        }
-
+        .panel-body { max-height: calc(55vh - 36px); overflow-y: auto; padding: 8px 10px; }
         .panel-content { display: none; }
         .panel-content.active { display: block; }
 
+        /* ==================== GPS STATUS ==================== */
         .gps-status { font-size: 11px; padding: 4px 10px; text-align: center; color: #888; }
         .gps-status.active { color: #4ecca3; }
-        .gps-status.error { color: #e94560; }
+        .gps-status.error  { color: #e94560; }
 
-        /* ---- PIN LIST ---- */
+        /* ==================== PIN LIST ==================== */
         .pin-item {
             display: flex; align-items: center; padding: 8px;
             margin-bottom: 4px; background: #1a1a2e; border-radius: 6px; cursor: pointer;
         }
         .pin-item:hover { background: #0f3460; }
         .pin-item.selected { background: #0f3460; border: 1px solid #e94560; }
-
         .pin-icon {
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 700; margin-right: 8px; flex-shrink: 0;
+            width: 28px; height: 28px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+            margin-right: 8px; flex-shrink: 0; background: #533483;
+            border: 2px solid rgba(255,255,255,0.3);
         }
-        .pin-icon.monument { background: #e94560; }
-        .pin-icon.erb { background: #533483; }
-        .pin-icon.srb { background: #0f3460; border: 2px solid #e94560; }
-
+        .pin-icon.known { border-color: #4ecca3; background: #1b4332; }
         .pin-info { flex: 1; min-width: 0; }
-        .pin-name { font-size: 13px; font-weight: 600; }
+        .pin-name  { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .pin-coords { font-size: 10px; color: #888; margin-top: 1px; font-family: monospace; }
         .pin-source { font-size: 10px; margin-top: 1px; }
-        .pin-source.known { color: #4ecca3; }
+        .pin-source.known    { color: #4ecca3; }
         .pin-source.computed { color: #f0c040; }
-
         .pin-distance { text-align: right; flex-shrink: 0; margin-left: 6px; }
-        .pin-distance .dist { font-size: 15px; font-weight: 700; color: #e94560; }
-        .pin-distance .unit { font-size: 10px; color: #888; }
+        .pin-distance .dist    { font-size: 15px; font-weight: 700; color: #e94560; }
+        .pin-distance .unit    { font-size: 10px; color: #888; }
         .pin-distance .bearing { font-size: 10px; color: #aaa; }
 
-        /* ---- NAVIGATION ---- */
+        /* ==================== NAVIGATION ==================== */
         .nav-display { text-align: center; padding: 8px; }
         .nav-target-name { font-size: 16px; font-weight: 700; color: #e94560; margin-bottom: 6px; }
         .nav-compass {
@@ -162,28 +156,27 @@
         .nav-stat .label { font-size: 10px; color: #888; text-transform: uppercase; }
         .coord-display {
             background: #1a1a2e; padding: 6px 10px; border-radius: 6px; margin-top: 6px;
-            font-family: monospace; font-size: 12px;
+            font-family: monospace; font-size: 11px; text-align: left;
         }
 
-        /* ---- CALIBRATE ---- */
+        /* ==================== ANCHORS PANEL ==================== */
         .calibrate-section { background: #1a1a2e; border-radius: 6px; padding: 10px; margin-bottom: 8px; }
         .calibrate-section h3 { font-size: 13px; color: #e94560; margin-bottom: 6px; }
         .calibrate-pin-row {
             display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
             padding: 6px; background: #16213e; border-radius: 4px;
         }
-        .calibrate-pin-row .pin-label { font-size: 11px; font-weight: 600; width: 45px; flex-shrink: 0; }
+        .calibrate-pin-row .pin-label {
+            font-size: 11px; font-weight: 600; min-width: 70px; flex-shrink: 0;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
         .calibrate-pin-row input {
             flex: 1; padding: 5px 6px; background: #1a1a2e; border: 1px solid #0f3460;
             border-radius: 4px; color: #e0e0e0; font-size: 12px; font-family: monospace; min-width: 0;
         }
         .calibrate-pin-row input:focus { outline: none; border-color: #e94560; }
-        .calibrate-pin-row .known-badge {
-            font-size: 9px; padding: 2px 5px; border-radius: 8px;
-            background: #1b4332; color: #4ecca3; flex-shrink: 0;
-        }
+        .known-badge { font-size: 9px; padding: 2px 5px; border-radius: 8px; background: #1b4332; color: #4ecca3; flex-shrink: 0; }
         .calibrate-actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-
         .validation-box {
             background: #1a1a2e; border-radius: 6px; padding: 10px; margin-bottom: 8px;
             border-left: 3px solid #4ecca3;
@@ -194,50 +187,44 @@
         .val-value { font-family: monospace; }
         .val-good { color: #4ecca3; } .val-warn { color: #f0c040; } .val-bad { color: #e94560; }
 
-        .info-text { font-size: 11px; color: #aaa; line-height: 1.4; padding: 6px; }
+        /* ==================== INFO PANEL ==================== */
+        .info-text { font-size: 11px; color: #aaa; line-height: 1.5; padding: 6px; }
         .disclaimer {
             font-size: 10px; color: #e94560; background: rgba(233,69,96,0.1);
             padding: 6px; border-radius: 6px; margin-top: 6px; line-height: 1.3;
         }
+        .edge-table { width: 100%; border-collapse: collapse; font-size: 11px; font-family: monospace; }
+        .edge-table td { padding: 3px 4px; border-bottom: 1px solid #1a1a2e; }
 
+        /* ==================== ACCURACY BADGE ==================== */
         .accuracy-badge { display: inline-block; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: 600; }
         .accuracy-badge.good { background: #1b4332; color: #4ecca3; }
         .accuracy-badge.fair { background: #3d2e00; color: #f0c040; }
         .accuracy-badge.poor { background: #3d1010; color: #e94560; }
 
-        /* ---- MAP MARKERS ---- */
+        /* ==================== MAP MARKERS ==================== */
         .pin-marker {
             display: flex; align-items: center; justify-content: center;
             width: 28px; height: 28px; border-radius: 50%;
-            font-size: 12px; font-weight: 700; color: white;
+            font-size: 10px; font-weight: 700; color: white; background: #533483;
             border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.5);
         }
-        .pin-marker.monument { background: #e94560; }
-        .pin-marker.erb { background: #533483; }
-        .pin-marker.srb { background: #0f3460; }
-        .pin-marker.known-pin { border-color: #4ecca3; box-shadow: 0 0 8px rgba(78,204,163,0.6); }
-
+        .pin-marker.known { border-color: #4ecca3; box-shadow: 0 0 8px rgba(78,204,163,0.6); background: #1b4332; }
         .user-marker {
             width: 16px; height: 16px; background: #4285f4;
-            border: 3px solid white; border-radius: 50%;
-            box-shadow: 0 0 10px rgba(66,133,244,0.5);
+            border: 3px solid white; border-radius: 50%; box-shadow: 0 0 10px rgba(66,133,244,0.5);
         }
 
-        /* ---- LEAFLET LAYER CONTROL OVERRIDES ---- */
+        /* ==================== LEAFLET OVERRIDES ==================== */
         .leaflet-control-layers {
-            background: rgba(22,33,62,0.95) !important;
-            border: 1px solid #0f3460 !important;
-            border-radius: 8px !important;
-            color: #e0e0e0 !important;
-            padding: 6px 10px !important;
+            background: rgba(22,33,62,0.95) !important; border: 1px solid #0f3460 !important;
+            border-radius: 8px !important; color: #e0e0e0 !important;
         }
         .leaflet-control-layers label { color: #e0e0e0 !important; font-size: 12px; }
         .leaflet-control-layers-separator { border-top-color: #0f3460 !important; }
-        .leaflet-control-layers-toggle {
-            width: 30px !important; height: 30px !important;
+        .leaflet-control-zoom a {
+            background: rgba(22,33,62,0.9) !important; color: #e0e0e0 !important; border-color: #0f3460 !important;
         }
-
-        /* Additional imagery date selector */
         .imagery-control {
             background: rgba(22,33,62,0.95); border: 1px solid #0f3460;
             border-radius: 8px; padding: 8px 10px; color: #e0e0e0;
@@ -245,726 +232,1538 @@
         .imagery-control h4 { font-size: 11px; color: #e94560; margin-bottom: 6px; }
         .imagery-control select {
             width: 100%; padding: 4px 6px; background: #1a1a2e;
-            border: 1px solid #0f3460; border-radius: 4px; color: #e0e0e0;
-            font-size: 12px;
+            border: 1px solid #0f3460; border-radius: 4px; color: #e0e0e0; font-size: 12px;
         }
         .imagery-control select:focus { outline: none; border-color: #e94560; }
         .imagery-control .note { font-size: 10px; color: #888; margin-top: 4px; }
 
-        .leaflet-control-zoom a {
-            background: rgba(22,33,62,0.9) !important;
-            color: #e0e0e0 !important;
-            border-color: #0f3460 !important;
+        /* ==================== MODAL ==================== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            z-index: 2000; align-items: center; justify-content: center; padding: 16px;
         }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #16213e; border: 1px solid #0f3460; border-radius: 10px;
+            width: 100%; max-width: 480px; max-height: 90vh;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modal-header {
+            padding: 12px 16px; border-bottom: 1px solid #0f3460;
+            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+        }
+        .modal-header h2 { font-size: 15px; color: #e94560; }
+        .modal-close { background: none; border: none; color: #888; font-size: 22px; cursor: pointer; line-height: 1; }
+        .modal-close:hover { color: #e94560; }
+        .modal-body { padding: 12px 16px; overflow-y: auto; flex: 1; }
+        .modal-footer {
+            padding: 10px 16px; border-top: 1px solid #0f3460;
+            display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0;
+        }
+
+        /* ==================== WIZARD ==================== */
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+        .wizard-progress { display: flex; gap: 4px; margin-bottom: 14px; }
+        .wizard-dot { flex: 1; height: 4px; border-radius: 2px; background: #0f3460; }
+        .wizard-dot.done   { background: #e94560; }
+        .wizard-dot.active { background: #f0c040; }
+
+        /* ==================== FORM ELEMENTS ==================== */
+        .form-group { margin-bottom: 10px; }
+        .form-label { font-size: 11px; color: #888; margin-bottom: 4px; display: block; }
+        .form-input {
+            width: 100%; padding: 7px 10px; background: #1a1a2e;
+            border: 1px solid #0f3460; border-radius: 6px; color: #e0e0e0;
+            font-size: 13px; font-family: inherit;
+        }
+        .form-input:focus { outline: none; border-color: #e94560; }
+        .form-row { display: flex; gap: 8px; }
+        .form-row .form-group { flex: 1; }
+        .form-hint { font-size: 10px; color: #666; margin-top: 3px; }
+        .section-title {
+            font-size: 12px; color: #e94560; font-weight: 600;
+            margin: 10px 0 6px; border-bottom: 1px solid #0f3460; padding-bottom: 4px;
+        }
+
+        /* Entry mode tabs */
+        .mode-tabs {
+            display: flex; gap: 0; margin-bottom: 10px;
+            border: 1px solid #0f3460; border-radius: 6px; overflow: hidden;
+        }
+        .mode-tab {
+            flex: 1; padding: 6px; text-align: center; font-size: 11px;
+            cursor: pointer; background: #1a1a2e; color: #888; border: none;
+        }
+        .mode-tab.active { background: #e94560; color: #fff; }
+        .mode-content { display: none; }
+        .mode-content.active { display: block; }
+
+        /* Parsed edge review */
+        .edge-review-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .edge-review-table th { text-align: left; color: #888; padding: 4px; font-weight: 500; }
+        .edge-review-table td { padding: 3px 4px; }
+        .edge-review-table tr:nth-child(even) td { background: #1a1a2e; }
+        .edge-review-table input {
+            width: 100%; padding: 3px 5px; background: #16213e;
+            border: 1px solid #0f3460; border-radius: 3px; color: #e0e0e0; font-size: 11px;
+        }
+
+        /* OCR status */
+        .ocr-status {
+            font-size: 12px; color: #888; padding: 8px; text-align: center;
+            background: #1a1a2e; border-radius: 6px; margin-bottom: 8px;
+        }
+        .ocr-status.working { color: #f0c040; }
+        .ocr-status.done    { color: #4ecca3; }
+        .ocr-status.error   { color: #e94560; }
+
+        /* Parsed text preview */
+        .parsed-preview {
+            background: #1a1a2e; border-radius: 6px; padding: 8px;
+            font-family: monospace; font-size: 11px; max-height: 100px;
+            overflow-y: auto; color: #aaa; margin-bottom: 8px;
+            white-space: pre-wrap; word-break: break-all;
+        }
+
+        /* Anchor mode cards */
+        .anchor-mode-card {
+            background: #1a1a2e; border-radius: 6px; padding: 10px; margin-bottom: 8px;
+            cursor: pointer; border: 2px solid transparent;
+        }
+        .anchor-mode-card:hover { border-color: #533483; }
+        .anchor-mode-card.selected { border-color: #e94560; }
+        .anchor-mode-card h4 { font-size: 13px; color: #e0e0e0; margin-bottom: 3px; }
+        .anchor-mode-card p  { font-size: 11px; color: #888; }
+
+        /* Tag chip */
+        .chip { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; background: #0f3460; color: #aaa; margin: 2px; }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="header">
-            <h1>Survey Pin Finder</h1>
-            <div class="header-buttons">
-                <button class="btn" onclick="centerOnUser()">My Loc</button>
-                <button class="btn" onclick="centerOnPins()">All Pins</button>
-                <button class="btn" id="btn-gps" onclick="toggleGPS()">GPS Off</button>
-            </div>
-        </div>
 
-        <div id="map-wrapper">
-            <div id="map"></div>
-        </div>
+<!-- ============================================================ -->
+<!--  SCREEN: HOME                                                -->
+<!-- ============================================================ -->
+<div id="screen-home" class="screen active">
+    <div class="header">
+        <h1>Survey Pin Finder</h1>
+    </div>
+    <div class="home-list" id="home-list"></div>
+    <div class="home-footer">
+        <button class="btn primary" style="width:100%;padding:10px;" onclick="openWizard()">+ New Property</button>
+    </div>
+</div>
 
-        <div class="bottom-panel expanded" id="bottom-panel">
-            <div class="panel-header">
-                <div class="panel-tabs">
-                    <button class="panel-tab active" data-tab="pins" onclick="switchTab('pins')">Pins</button>
-                    <button class="panel-tab" data-tab="navigate" onclick="switchTab('navigate')">Navigate</button>
-                    <button class="panel-tab" data-tab="calibrate" onclick="switchTab('calibrate')">Calibrate</button>
-                    <button class="panel-tab" data-tab="info" onclick="switchTab('info')">Info</button>
-                </div>
-                <button class="collapse-btn" id="collapse-btn" onclick="togglePanel()" title="Collapse/Expand">&#9660;</button>
-            </div>
-            <div class="panel-body" id="panel-body">
-                <div id="gps-status" class="gps-status">GPS inactive</div>
-
-                <div id="tab-pins" class="panel-content active">
-                    <div id="pin-list"></div>
-                </div>
-
-                <div id="tab-navigate" class="panel-content">
-                    <div class="nav-display" id="nav-display">
-                        <div style="color:#888; padding:15px;">Select a pin to navigate</div>
-                    </div>
-                </div>
-
-                <div id="tab-calibrate" class="panel-content">
-                    <div class="calibrate-section">
-                        <h3>Set Known Pin Coordinates</h3>
-                        <p style="font-size:10px; color:#888; margin-bottom:8px;">
-                            Enter GPS coordinates for pins you've located. Others recalculate automatically.
-                        </p>
-                        <div id="calibrate-pins"></div>
-                        <div class="calibrate-actions">
-                            <button class="btn primary small" onclick="applyCalibration()">Recalculate All</button>
-                            <button class="btn small" onclick="resetCalibration()">Reset Defaults</button>
-                        </div>
-                    </div>
-                    <div class="calibrate-section">
-                        <h3>Set Pin from GPS</h3>
-                        <p style="font-size:10px; color:#888; margin-bottom:6px;">Stand on a pin, tap to set.</p>
-                        <div id="gps-set-buttons"></div>
-                    </div>
-                    <div id="validation-results"></div>
-                </div>
-
-                <div id="tab-info" class="panel-content">
-                    <div class="info-text">
-                        <strong>Property:</strong> 2601 Mossy Road, Ozark, AR 72949<br>
-                        <strong>Legal:</strong> SE/4 SW/4, Sec 18, T11N-R27W, Franklin County<br>
-                        <strong>Acreage:</strong> 2.00 acres (subdivision) / 5-acre parent<br>
-                        <strong>Survey Ref:</strong> Franklin County Circuit Clerk, Slide 1054
-                    </div>
-                    <div class="calibrate-section">
-                        <h3>Plat Calls</h3>
-                        <div style="font-size:11px; font-family:monospace; line-height:1.7;">
-                            1&rarr;2: S 87&deg;12'31" E, 329.97'<br>
-                            2&rarr;3: S 01&deg;51'27" W, 263.88'<br>
-                            3&rarr;4: N 87&deg;12'32" W, 330.32'<br>
-                            4&rarr;1: N 01&deg;53'12" E, 263.88'<br>
-                            4&rarr;5: S 01&deg;53'12" W, 401.92'<br>
-                            5&rarr;6: S 87&deg;03'45" E, 330.32'<br>
-                            6&rarr;3: N 01&deg;51'27" E, 402.77'
-                        </div>
-                    </div>
-                    <div class="disclaimer">
-                        Consumer GPS: 3-16 ft accuracy. Gets you close enough to probe/metal detect for pins.
-                        Not a substitute for a licensed survey. Rebar pins have plastic caps stamped #1367.
-                    </div>
-                </div>
-            </div>
+<!-- ============================================================ -->
+<!--  SCREEN: MAP                                                 -->
+<!-- ============================================================ -->
+<div id="screen-map" class="screen">
+    <div class="header">
+        <h1 id="map-prop-name" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Survey Pin Finder</h1>
+        <div class="header-buttons">
+            <button class="btn small" onclick="showHome()">&#8592; Back</button>
+            <button class="btn small" onclick="centerOnUser()">My Loc</button>
+            <button class="btn small" onclick="centerOnPins()">Pins</button>
+            <button class="btn small" id="btn-gps" onclick="toggleGPS()">GPS Off</button>
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-    // ==========================================
-    // GEODESY
-    // ==========================================
-    const EARTH_RADIUS_M = 6371000;
-    const DEG_TO_RAD = Math.PI / 180;
-    const RAD_TO_DEG = 180 / Math.PI;
+    <div id="map-wrapper">
+        <div id="map"></div>
+    </div>
 
-    function bearingToAzimuth(q1, d, m, s, q2) {
-        const angle = d + m/60 + s/3600;
-        if (q1==='N'&&q2==='E') return angle;
-        if (q1==='N'&&q2==='W') return 360-angle;
-        if (q1==='S'&&q2==='E') return 180-angle;
-        if (q1==='S'&&q2==='W') return 180+angle;
-        return angle;
+    <div class="bottom-panel expanded" id="bottom-panel">
+        <div class="panel-header">
+            <div class="panel-tabs">
+                <button class="panel-tab active" data-tab="pins"     onclick="switchTab('pins')">Pins</button>
+                <button class="panel-tab"         data-tab="navigate" onclick="switchTab('navigate')">Navigate</button>
+                <button class="panel-tab"         data-tab="anchors"  onclick="switchTab('anchors')">Anchors</button>
+                <button class="panel-tab"         data-tab="info"     onclick="switchTab('info')">Info</button>
+            </div>
+            <button class="collapse-btn" id="collapse-btn" onclick="togglePanel()">&#9660;</button>
+        </div>
+        <div class="panel-body" id="panel-body">
+            <div id="gps-status" class="gps-status">GPS inactive</div>
+
+            <div id="tab-pins" class="panel-content active">
+                <div id="pin-list"></div>
+            </div>
+
+            <div id="tab-navigate" class="panel-content">
+                <div class="nav-display" id="nav-display">
+                    <div style="color:#888;padding:15px;">Select a pin to navigate</div>
+                </div>
+            </div>
+
+            <div id="tab-anchors" class="panel-content">
+                <div class="calibrate-section">
+                    <h3>Known GPS Anchors</h3>
+                    <p style="font-size:10px;color:#888;margin-bottom:8px;">Enter GPS coordinates for pins you have physically located. All others are computed from plat bearings.</p>
+                    <div id="calibrate-pins"></div>
+                    <div class="calibrate-actions">
+                        <button class="btn primary small" onclick="applyCalibration()">Recalculate</button>
+                        <button class="btn small" onclick="resetAnchors()">Reset</button>
+                    </div>
+                </div>
+                <div class="calibrate-section">
+                    <h3>Set Pin from GPS</h3>
+                    <p style="font-size:10px;color:#888;margin-bottom:6px;">Stand on a pin, tap to record your location.</p>
+                    <div id="gps-set-buttons"></div>
+                </div>
+                <div id="validation-results"></div>
+            </div>
+
+            <div id="tab-info" class="panel-content">
+                <div id="info-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!--  MODAL: NEW PROPERTY WIZARD                                  -->
+<!-- ============================================================ -->
+<div class="modal-overlay" id="modal-wizard">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="wizard-title">New Property</h2>
+            <button class="modal-close" onclick="closeWizard()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="wizard-progress" id="wizard-progress">
+                <div class="wizard-dot active" id="wdot-0"></div>
+                <div class="wizard-dot" id="wdot-1"></div>
+                <div class="wizard-dot" id="wdot-2"></div>
+            </div>
+
+            <!-- Step 1: Basic Info -->
+            <div class="wizard-step active" id="wstep-0">
+                <div class="section-title">Property Info</div>
+                <div class="form-group">
+                    <label class="form-label">Property Name *</label>
+                    <input class="form-input" id="w-name" placeholder="e.g. Mossy Road Tract" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address / Description</label>
+                    <input class="form-input" id="w-address" placeholder="e.g. 2601 Mossy Road, Ozark AR" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Legal Description</label>
+                    <input class="form-input" id="w-legal" placeholder="e.g. SE/4 SW/4, Sec 18, T11N-R27W" />
+                </div>
+                <div class="section-title">PLSS Location (optional)</div>
+                <p style="font-size:10px;color:#888;margin-bottom:6px;">Used to auto-estimate pin locations via BLM geocoder.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Section</label>
+                        <input class="form-input" id="w-section" placeholder="18" type="number" min="1" max="36" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Township</label>
+                        <input class="form-input" id="w-township" placeholder="11N" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Range</label>
+                        <input class="form-input" id="w-range" placeholder="27W" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input class="form-input" id="w-state" placeholder="Arkansas" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Plat Edges -->
+            <div class="wizard-step" id="wstep-1">
+                <div class="section-title">Enter Plat Calls</div>
+                <p style="font-size:10px;color:#888;margin-bottom:8px;">Add boundary lines from your survey plat. Each call has a bearing and distance.</p>
+
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="switchEdgeMode('manual')">Manual</button>
+                    <button class="mode-tab" onclick="switchEdgeMode('paste')">Paste Text</button>
+                    <button class="mode-tab" onclick="switchEdgeMode('scan')">Scan Image</button>
+                </div>
+
+                <!-- Manual entry -->
+                <div class="mode-content active" id="mode-manual">
+                    <div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:8px;flex-wrap:wrap;">
+                        <div class="form-group" style="flex:2;min-width:120px;">
+                            <label class="form-label">Bearing</label>
+                            <input class="form-input" id="edge-bearing" placeholder="S 87°12'31&quot; E" />
+                        </div>
+                        <div class="form-group" style="width:80px;">
+                            <label class="form-label">Dist (ft)</label>
+                            <input class="form-input" id="edge-dist" type="number" step="0.01" placeholder="329.97" />
+                        </div>
+                        <div class="form-group" style="flex:2;min-width:100px;">
+                            <label class="form-label">From Pin</label>
+                            <input class="form-input" id="edge-from" placeholder="NW Corner" />
+                        </div>
+                        <div class="form-group" style="flex:2;min-width:100px;">
+                            <label class="form-label">To Pin</label>
+                            <input class="form-input" id="edge-to" placeholder="NE Corner" />
+                        </div>
+                        <button class="btn primary small" onclick="addEdgeManual()" style="margin-bottom:10px;white-space:nowrap;">Add</button>
+                    </div>
+                    <div id="manual-edge-error" style="color:#e94560;font-size:11px;margin-bottom:6px;"></div>
+                </div>
+
+                <!-- Paste text -->
+                <div class="mode-content" id="mode-paste">
+                    <textarea class="form-input" id="paste-text" rows="5"
+                        placeholder="Paste plat text here. Example:&#10;S 87°12'31&quot; E, 329.97'&#10;S 01°51'27&quot; W, 263.88'&#10;N 87°12'32&quot; W, 330.32'"></textarea>
+                    <div class="form-hint">Supports most bearing/distance formats. Assign pin names after parsing.</div>
+                    <button class="btn primary small" onclick="parsePastedText()" style="margin-top:6px;">Parse Text</button>
+                </div>
+
+                <!-- Scan image -->
+                <div class="mode-content" id="mode-scan">
+                    <p style="font-size:11px;color:#888;margin-bottom:8px;">Take a photo of your plat or select an image. Tesseract OCR will extract bearing/distance calls.</p>
+                    <input type="file" id="scan-input" accept="image/*" capture="environment" style="display:none" onchange="runOCR(this)" />
+                    <button class="btn primary" onclick="document.getElementById('scan-input').click()">Choose / Take Photo</button>
+                    <div id="ocr-status" class="ocr-status" style="display:none;"></div>
+                    <div id="ocr-preview" class="parsed-preview" style="display:none;"></div>
+                </div>
+
+                <!-- Parsed edge review -->
+                <div id="parsed-review" style="display:none;margin-top:8px;">
+                    <div class="section-title">Review Parsed Edges - Assign Pin Names</div>
+                    <div id="parsed-review-table"></div>
+                    <div style="display:flex;gap:6px;margin-top:6px;">
+                        <button class="btn success small" onclick="acceptParsedEdges()">Accept All</button>
+                        <button class="btn small" onclick="document.getElementById('parsed-review').style.display='none'">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Edge list -->
+                <div style="margin-top:10px;">
+                    <div class="section-title">Added Calls <span id="edge-count" class="chip">0</span></div>
+                    <div id="edge-list"></div>
+                </div>
+            </div>
+
+            <!-- Step 3: Anchor -->
+            <div class="wizard-step" id="wstep-2">
+                <div class="section-title">Set Starting Anchor</div>
+                <p style="font-size:10px;color:#888;margin-bottom:8px;">To place pins on the map, we need at least one GPS coordinate as an anchor.</p>
+
+                <div class="anchor-mode-card selected" id="anchor-card-plss" onclick="selectAnchorMode('plss')">
+                    <h4>Auto-Estimate (PLSS)</h4>
+                    <p>Use Section/Township/Range to get an approximate location. Good for initial orientation; refine later with GPS.</p>
+                </div>
+                <div class="anchor-mode-card" id="anchor-card-manual" onclick="selectAnchorMode('manual')">
+                    <h4>Manual Coordinate</h4>
+                    <p>Enter a known lat/lon for one specific pin. Most accurate.</p>
+                </div>
+                <div class="anchor-mode-card" id="anchor-card-skip" onclick="selectAnchorMode('skip')">
+                    <h4>Skip for Now</h4>
+                    <p>Save the property and set anchors later from the field with GPS.</p>
+                </div>
+
+                <!-- PLSS panel -->
+                <div id="anchor-plss-panel" style="margin-top:10px;">
+                    <div style="font-size:11px;color:#888;margin-bottom:6px;">
+                        Uses Section <span id="plss-preview-sec">?</span>,
+                        Township <span id="plss-preview-twp">?</span>,
+                        Range <span id="plss-preview-rng">?</span> from Step 1.
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Which pin is at/near the section center?</label>
+                        <select class="form-input" id="plss-anchor-pin"></select>
+                    </div>
+                    <button class="btn primary small" onclick="fetchPLSS()" id="btn-fetch-plss">Fetch from BLM API</button>
+                    <div id="plss-status" style="font-size:11px;margin-top:6px;color:#888;"></div>
+                </div>
+
+                <!-- Manual anchor panel -->
+                <div id="anchor-manual-panel" style="display:none;margin-top:10px;">
+                    <div class="form-group">
+                        <label class="form-label">Pin</label>
+                        <select class="form-input" id="manual-anchor-pin"></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Latitude</label>
+                            <input class="form-input" id="manual-anchor-lat" placeholder="35.617140" type="number" step="0.000001" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Longitude</label>
+                            <input class="form-input" id="manual-anchor-lon" placeholder="-93.907070" type="number" step="0.000001" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn small" id="wizard-prev" onclick="wizardPrev()" style="display:none;">Back</button>
+            <button class="btn primary" id="wizard-next" onclick="wizardNext()">Next</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+'use strict';
+
+// =====================================================================
+// GEODESY HELPERS
+// =====================================================================
+var EARTH_RADIUS_M = 6371000;
+var DEG_TO_RAD = Math.PI / 180;
+var RAD_TO_DEG = 180 / Math.PI;
+
+function bearingToAzimuth(q1, d, m, s, q2) {
+    var angle = d + m/60 + s/3600;
+    if (q1==='N'&&q2==='E') return angle;
+    if (q1==='N'&&q2==='W') return 360-angle;
+    if (q1==='S'&&q2==='E') return 180-angle;
+    if (q1==='S'&&q2==='W') return 180+angle;
+    return angle;
+}
+
+function reverseAzimuth(az) { return (az+180)%360; }
+
+function movePoint(lat, lon, azDeg, distFt) {
+    var d = distFt*0.3048/EARTH_RADIUS_M;
+    var a = azDeg*DEG_TO_RAD, la=lat*DEG_TO_RAD, lo=lon*DEG_TO_RAD;
+    var la2 = Math.asin(Math.sin(la)*Math.cos(d)+Math.cos(la)*Math.sin(d)*Math.cos(a));
+    var lo2 = lo+Math.atan2(Math.sin(a)*Math.sin(d)*Math.cos(la),Math.cos(d)-Math.sin(la)*Math.sin(la2));
+    return {lat:la2*RAD_TO_DEG, lon:lo2*RAD_TO_DEG};
+}
+
+function distanceBetween(a1,o1,a2,o2) {
+    var dl=(a2-a1)*DEG_TO_RAD, dn=(o2-o1)*DEG_TO_RAD;
+    var x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a1*DEG_TO_RAD)*Math.cos(a2*DEG_TO_RAD)*Math.sin(dn/2)*Math.sin(dn/2);
+    return EARTH_RADIUS_M*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))*3.28084;
+}
+
+function bearingBetween(a1,o1,a2,o2) {
+    var d=(o2-o1)*DEG_TO_RAD;
+    var y=Math.sin(d)*Math.cos(a2*DEG_TO_RAD);
+    var x=Math.cos(a1*DEG_TO_RAD)*Math.sin(a2*DEG_TO_RAD)-Math.sin(a1*DEG_TO_RAD)*Math.cos(a2*DEG_TO_RAD)*Math.cos(d);
+    return (Math.atan2(y,x)*RAD_TO_DEG+360)%360;
+}
+
+function formatBearing(deg) {
+    var d=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+    return d[Math.round(deg/22.5)%16]+' ('+Math.round(deg)+'\u00B0)';
+}
+
+// =====================================================================
+// BEARING PARSER
+// =====================================================================
+function parseBearingString(str) {
+    if (!str) return null;
+    str = str.trim().toUpperCase();
+
+    // N/S D°M'S" E/W  (flexible separators)
+    var m = str.match(/^([NS])\s*(\d+)[°\-\s]+(\d+)['\-\s]+(\d+(?:\.\d+)?)["\s]*([EW])$/);
+    if (m) return bearingToAzimuth(m[1], parseFloat(m[2]), parseFloat(m[3]), parseFloat(m[4]), m[5]);
+
+    // N/S D°M' E/W
+    m = str.match(/^([NS])\s*(\d+)[°\-\s]+(\d+(?:\.\d+)?)['\s]*([EW])$/);
+    if (m) return bearingToAzimuth(m[1], parseFloat(m[2]), parseFloat(m[3]), 0, m[4]);
+
+    // N/S D.ddd E/W
+    m = str.match(/^([NS])\s*(\d+(?:\.\d+)?)\s*([EW])$/);
+    if (m) return bearingToAzimuth(m[1], parseFloat(m[2]), 0, 0, m[3]);
+
+    // plain azimuth
+    m = str.match(/^(\d+(?:\.\d+)?)$/);
+    if (m) return parseFloat(m[1]);
+
+    return null;
+}
+
+// =====================================================================
+// TEXT PARSER - extract bearing/distance calls
+// =====================================================================
+function parseCallsFromText(text) {
+    var calls = [];
+    // Normalize
+    text = text.replace(/[\u2018\u2019]/g,"'").replace(/[\u201c\u201d]/g,'"').replace(/\u00b0/g,'°');
+
+    var bearingPat = '[NS]\\s*\\d+[°\\-\\s]\\d+[\'\\-\\s]\\d+(?:\\.\\d+)?[\"\\s]*[EW]|[NS]\\s*\\d+\\.\\d+\\s*[EW]';
+    var re = new RegExp('('+bearingPat+')\\s*[,\\s]+(\\d+(?:\\.\\d+)?)\\s*(?:ft|feet|\')?', 'gi');
+    var match;
+    while ((match = re.exec(text)) !== null) {
+        var bearingStr = match[1].trim();
+        var dist = parseFloat(match[2]);
+        var az = parseBearingString(bearingStr);
+        if (az !== null && !isNaN(dist) && dist > 0) {
+            calls.push({bearingStr:bearingStr, azimuth:az, dist:dist});
+        }
     }
-    function reverseAzimuth(az) { return (az+180)%360; }
+    return calls;
+}
 
-    function movePoint(lat, lon, azDeg, distFt) {
-        const d = distFt*0.3048/EARTH_RADIUS_M;
-        const a = azDeg*DEG_TO_RAD, la=lat*DEG_TO_RAD, lo=lon*DEG_TO_RAD;
-        const la2 = Math.asin(Math.sin(la)*Math.cos(d)+Math.cos(la)*Math.sin(d)*Math.cos(a));
-        const lo2 = lo+Math.atan2(Math.sin(a)*Math.sin(d)*Math.cos(la),Math.cos(d)-Math.sin(la)*Math.sin(la2));
-        return {lat:la2*RAD_TO_DEG, lon:lo2*RAD_TO_DEG};
-    }
+// =====================================================================
+// ESCAPE HTML
+// =====================================================================
+function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-    function distanceBetween(a1,o1,a2,o2) {
-        const dl=(a2-a1)*DEG_TO_RAD, dn=(o2-o1)*DEG_TO_RAD;
-        const x=Math.sin(dl/2)**2+Math.cos(a1*DEG_TO_RAD)*Math.cos(a2*DEG_TO_RAD)*Math.sin(dn/2)**2;
-        return EARTH_RADIUS_M*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))*3.28084;
-    }
-
-    function bearingBetween(a1,o1,a2,o2) {
-        const d=(o2-o1)*DEG_TO_RAD;
-        const y=Math.sin(d)*Math.cos(a2*DEG_TO_RAD);
-        const x=Math.cos(a1*DEG_TO_RAD)*Math.sin(a2*DEG_TO_RAD)-Math.sin(a1*DEG_TO_RAD)*Math.cos(a2*DEG_TO_RAD)*Math.cos(d);
-        return (Math.atan2(y,x)*RAD_TO_DEG+360)%360;
-    }
-
-    function formatBearing(deg) {
-        const d=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-        return d[Math.round(deg/22.5)%16]+' ('+Math.round(deg)+'\u00B0)';
-    }
-
-    // ==========================================
-    // PLAT DATA
-    // ==========================================
-    const PLAT_EDGES = [
-        {from:1,to:2,azimuth:bearingToAzimuth('S',87,12,31,'E'),dist:329.97,label:'S 87\u00B012\'31" E'},
-        {from:2,to:3,azimuth:bearingToAzimuth('S',1,51,27,'W'),dist:263.88,label:'S 01\u00B051\'27" W'},
-        {from:3,to:4,azimuth:bearingToAzimuth('N',87,12,32,'W'),dist:330.32,label:'N 87\u00B012\'32" W'},
-        {from:4,to:1,azimuth:bearingToAzimuth('N',1,53,12,'E'),dist:263.88,label:'N 01\u00B053\'12" E'},
-        {from:4,to:5,azimuth:bearingToAzimuth('S',1,53,12,'W'),dist:401.92,label:'S 01\u00B053\'12" W'},
-        {from:5,to:6,azimuth:bearingToAzimuth('S',87,3,45,'E'),dist:330.32,label:'S 87\u00B003\'45" E'},
-        {from:6,to:3,azimuth:bearingToAzimuth('N',1,51,27,'E'),dist:402.77,label:'N 01\u00B051\'27" E'},
-    ];
-
-    const PIN_META = {
-        1:{name:'Pin 1 - NW (POB)',type:'monument',desc:'Forest Service Monument, NE/Corner SE/4 SW/4'},
-        2:{name:'Pin 2 - NE Corner',type:'erb',desc:'Existing 1/2" Rebar, NE corner 2-acre tract'},
-        3:{name:'Pin 3 - East Mid',type:'srb',desc:'Set 1/2" Rebar, near 20\' Water Line Easement'},
-        4:{name:'Pin 4 - West Mid',type:'srb',desc:'Set 1/2" Rebar, west side at gravel drive'},
-        5:{name:'Pin 5 - SW Corner',type:'erb',desc:'Existing 1/2" Rebar, SW corner 5-acre tract'},
-        6:{name:'Pin 6 - SE Corner',type:'erb',desc:'Existing 1/2" Rebar, SE corner, near Forest Service Monument'},
+// =====================================================================
+// BUILT-IN: MOSSY ROAD
+// =====================================================================
+function buildMossyRoadProperty() {
+    return {
+        id: 'mossy-road-builtin',
+        name: 'Mossy Road - 2601',
+        address: '2601 Mossy Road, Ozark, AR 72949',
+        legal: 'SE/4 SW/4, Sec 18, T11N-R27W, Franklin County',
+        section: '18', township: '11N', range: '27W', state: 'Arkansas',
+        edges: [
+            {from:'NW Corner (POB)', to:'NE Corner',       azimuth:bearingToAzimuth('S',87,12,31,'E'), dist:329.97, bearingStr:'S 87\u00B012\'31" E'},
+            {from:'NE Corner',       to:'E Mid',           azimuth:bearingToAzimuth('S',1,51,27,'W'),  dist:263.88, bearingStr:'S 01\u00B051\'27" W'},
+            {from:'E Mid',           to:'W Mid',           azimuth:bearingToAzimuth('N',87,12,32,'W'), dist:330.32, bearingStr:'N 87\u00B012\'32" W'},
+            {from:'W Mid',           to:'NW Corner (POB)', azimuth:bearingToAzimuth('N',1,53,12,'E'),  dist:263.88, bearingStr:'N 01\u00B053\'12" E'},
+            {from:'W Mid',           to:'SW Corner',       azimuth:bearingToAzimuth('S',1,53,12,'W'),  dist:401.92, bearingStr:'S 01\u00B053\'12" W'},
+            {from:'SW Corner',       to:'SE Corner',       azimuth:bearingToAzimuth('S',87,3,45,'E'),  dist:330.32, bearingStr:'S 87\u00B003\'45" E'},
+            {from:'SE Corner',       to:'E Mid',           azimuth:bearingToAzimuth('N',1,51,27,'E'),  dist:402.77, bearingStr:'N 01\u00B051\'27" E'}
+        ],
+        knownPins: {
+            'SW Corner': {lat:35.61714, lon:-93.90707},
+            'SE Corner':  {lat:35.61710, lon:-93.90588}
+        },
+        notes: 'Survey Ref: Franklin County Circuit Clerk, Slide 1054. 2.00 acres (subdivision). Rebar pins have plastic caps stamped #1367.',
+        builtin: true
     };
+}
 
-    // ==========================================
-    // PIN CALCULATION ENGINE
-    // ==========================================
-    let knownPins = {
-        5: {lat:35.61714, lon:-93.90707},
-        6: {lat:35.61710, lon:-93.90588},
-    };
-    let pinCoords = {};
+// =====================================================================
+// DATA STORE
+// =====================================================================
+var appData = { properties: [], activePropertyId: null };
 
-    function buildGraph() {
-        const g={};
-        for (const e of PLAT_EDGES) {
-            if(!g[e.from])g[e.from]=[];
-            if(!g[e.to])g[e.to]=[];
-            g[e.from].push({target:e.to,azimuth:e.azimuth,dist:e.dist});
-            g[e.to].push({target:e.from,azimuth:reverseAzimuth(e.azimuth),dist:e.dist});
-        }
-        return g;
+function saveData() {
+    try { localStorage.setItem('surveyAppData', JSON.stringify(appData)); } catch(e) {}
+}
+
+function loadData() {
+    try {
+        var raw = localStorage.getItem('surveyAppData');
+        if (raw) appData = JSON.parse(raw);
+    } catch(e) {}
+
+    if (!appData.properties) appData.properties = [];
+
+    // Ensure builtin exists
+    var builtinId = 'mossy-road-builtin';
+    if (!appData.properties.find(function(p){ return p.id === builtinId; })) {
+        appData.properties.unshift(buildMossyRoadProperty());
+        saveData();
     }
 
-    function calculateAllPins() {
-        const graph=buildGraph();
-        const comps={};
-        for (const [aid,ac] of Object.entries(knownPins)) {
-            const anchorId=parseInt(aid);
-            const visited=new Set([anchorId]);
-            const queue=[{id:anchorId,lat:ac.lat,lon:ac.lon}];
-            if(!comps[anchorId])comps[anchorId]=[];
-            comps[anchorId].push({lat:ac.lat,lon:ac.lon,fromAnchor:anchorId,known:true});
-            while(queue.length>0){
-                const cur=queue.shift();
-                for(const nb of (graph[cur.id]||[])){
-                    if(visited.has(nb.target))continue;
-                    visited.add(nb.target);
-                    const cp=movePoint(cur.lat,cur.lon,nb.azimuth,nb.dist);
-                    if(!comps[nb.target])comps[nb.target]=[];
-                    comps[nb.target].push({lat:cp.lat,lon:cp.lon,fromAnchor:anchorId,known:false});
-                    queue.push({id:nb.target,lat:cp.lat,lon:cp.lon});
-                }
-            }
-        }
-        pinCoords={};
-        for(let id=1;id<=6;id++){
-            const cs=comps[id]||[];
-            if(cs.length===0)continue;
-            const kc=cs.find(c=>c.known);
-            if(kc){
-                pinCoords[id]={lat:kc.lat,lon:kc.lon,source:'known',anchors:[kc.fromAnchor]};
-            } else {
-                const al=cs.reduce((s,c)=>s+c.lat,0)/cs.length;
-                const ol=cs.reduce((s,c)=>s+c.lon,0)/cs.length;
-                pinCoords[id]={lat:al,lon:ol,source:cs.length>1?'averaged':'computed',anchors:cs.map(c=>c.fromAnchor)};
-            }
-        }
-    }
-
-    function validatePins() {
-        const results=[];
-        for(const e of PLAT_EDGES){
-            const p1=pinCoords[e.from],p2=pinCoords[e.to];
-            if(!p1||!p2)continue;
-            const ad=distanceBetween(p1.lat,p1.lon,p2.lat,p2.lon);
-            const ab=bearingBetween(p1.lat,p1.lon,p2.lat,p2.lon);
-            const de=Math.abs(ad-e.dist);
-            let be=Math.abs(ab-e.azimuth); if(be>180)be=360-be;
-            results.push({from:e.from,to:e.to,label:e.label,platDist:e.dist,actualDist:ad,distError:de,p1Source:p1.source,p2Source:p2.source});
-        }
-        return results;
-    }
-
-    function buildPinsArray() {
-        const arr=[];
-        for(let id=1;id<=6;id++){
-            const c=pinCoords[id],m=PIN_META[id];
-            if(!c||!m)continue;
-            arr.push({id,name:m.name,type:m.type,description:m.desc,lat:c.lat,lon:c.lon,source:c.source,anchors:c.anchors,isKnown:c.source==='known'});
-        }
-        return arr;
-    }
-
-    // ==========================================
-    // MAP & UI STATE
-    // ==========================================
-    let map, pins=[], pinMarkers=[], pinLines=[];
-    let userMarker=null, userAccuracyCircle=null;
-    let selectedPin=null, userLat=null, userLon=null, userHeading=null;
-    let gpsWatchId=null, gpsActive=false;
-    let panelCollapsed=false;
-    let wakeLock=null;           // Screen Wake Lock sentinel
-    let lastProximityVibrate=0;  // timestamp of last proximity vibration
-    // Base layer tracking for syncing dropdown <-> layer control
-    let baseLayerMap = {};       // key -> L.tileLayer or L.layerGroup
-    let activeBaseKey = 'esri';  // currently active base layer key
-    let layerControl = null;     // reference to Leaflet layer control
-    let dropdownKeyToName = {};  // dropdown value -> layer control display name
-    let nameToDropdownKey = {};  // layer control display name -> dropdown value
-
-    function initMap() {
-        calculateAllPins();
-        pins=buildPinsArray();
-
-        map=L.map('map',{zoomControl:false,attributionControl:false});
-
-        // --- BASE LAYERS (all keyed for sync between dropdown & layer control) ---
-        baseLayerMap = {
-            'esri': L.tileLayer(
-                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                {maxZoom:20}
-            ),
-            'esri_hybrid': L.layerGroup([
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20}),
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.9}),
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.8})
-            ]),
-            'google': L.tileLayer(
-                'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-                {maxZoom:20}
-            ),
-            'google_hybrid': L.tileLayer(
-                'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-                {maxZoom:20}
-            ),
-            'esri_clarity': L.tileLayer(
-                'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                {maxZoom:20}
-            ),
-            'usgs': L.tileLayer(
-                'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',
-                {maxZoom:20}
-            ),
-            'streets': L.tileLayer(
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                {maxZoom:19}
-            ),
-            'topo': L.tileLayer(
-                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-                {maxZoom:19}
-            ),
-        };
-
-        // Mapping between dropdown keys and layer control display names
-        dropdownKeyToName = {
-            'esri': 'ESRI Satellite',
-            'esri_hybrid': 'ESRI Sat + Labels',
-            'google': 'Google Satellite',
-            'google_hybrid': 'Google Sat + Labels',
-            'esri_clarity': 'ESRI Clarity',
-            'usgs': 'USGS Aerial',
-            'streets': 'Streets (OSM)',
-            'topo': 'Topographic',
-        };
-        nameToDropdownKey = {};
-        for (var k in dropdownKeyToName) { nameToDropdownKey[dropdownKeyToName[k]] = k; }
-
-        // --- OVERLAY LAYERS ---
-        var roadsOverlay = L.tileLayer(
-            'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
-            {maxZoom:20, opacity:0.7}
-        );
-        var topoOverlay = L.tileLayer(
-            'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-            {maxZoom:17, opacity:0.5}
-        );
-        var labelsOverlay = L.tileLayer(
-            'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-            {maxZoom:20, opacity:0.7}
-        );
-
-        // Default base
-        activeBaseKey = 'esri';
-        baseLayerMap[activeBaseKey].addTo(map);
-
-        // Build base layers object for Leaflet control using display names
-        var baseLayersForControl = {};
-        for (var key in dropdownKeyToName) {
-            baseLayersForControl[dropdownKeyToName[key]] = baseLayerMap[key];
-        }
-
-        var overlays = {
-            'Roads & Labels': roadsOverlay,
-            'Topo Contours': topoOverlay,
-            'Place Names': labelsOverlay,
-        };
-
-        layerControl = L.control.layers(baseLayersForControl, overlays, {position:'topleft', collapsed:true});
-        layerControl.addTo(map);
-        L.control.zoom({position:'topright'}).addTo(map);
-
-        // Listen for Leaflet layer control changes -> sync dropdown
-        map.on('baselayerchange', function(e) {
-            var key = nameToDropdownKey[e.name];
-            if (key) {
-                activeBaseKey = key;
-                var sel = document.getElementById('imagery-select');
-                if (sel) sel.value = key;
-            }
-        });
-
-        // --- IMAGERY DATE SELECTOR (custom Leaflet control) ---
-        var ImageryControl = L.Control.extend({
-            options: {position:'topleft'},
-            onAdd: function() {
-                var div = L.DomUtil.create('div','imagery-control');
-                L.DomEvent.disableClickPropagation(div);
-                L.DomEvent.disableScrollPropagation(div);
-                // Build dropdown options from our key map
-                var opts = '';
-                var order = ['esri','esri_hybrid','google','google_hybrid','esri_clarity','usgs','streets','topo'];
-                for (var i=0; i<order.length; i++) {
-                    var k = order[i];
-                    opts += '<option value="'+k+'"'+(k===activeBaseKey?' selected':'')+'>'+dropdownKeyToName[k]+'</option>';
-                }
-                div.innerHTML =
-                    '<h4>Map Source</h4>' +
-                    '<select id="imagery-select">'+opts+'</select>' +
-                    '<div class="note">Switch sources to find clearer leaf-off imagery.</div>';
-                return div;
-            }
-        });
-        new ImageryControl().addTo(map);
-
-        // Wire up imagery dropdown -> switch base layer & sync Leaflet control
-        setTimeout(function(){
-            var sel = document.getElementById('imagery-select');
-            if(sel) sel.addEventListener('change', function(){
-                switchImagery(this.value);
-            });
-        }, 100);
-
-        drawPins();
-        drawBoundary();
-        centerOnPins();
-        renderPinList();
-        renderCalibratePanel();
-
-        // Invalidate map size after layout settles
-        setTimeout(function(){ map.invalidateSize(); }, 300);
-    }
-
-    // Extra imagery sources
-    function switchImagery(key) {
-        if (key === activeBaseKey) return;
-        if (!baseLayerMap[key]) return;
-
-        // Remove the currently active base layer from the map
-        if (baseLayerMap[activeBaseKey]) {
-            map.removeLayer(baseLayerMap[activeBaseKey]);
-        }
-
-        // Add the new base layer and send it to the back
-        activeBaseKey = key;
-        baseLayerMap[key].addTo(map);
-        if (baseLayerMap[key].bringToBack) baseLayerMap[key].bringToBack();
-
-        // Sync the dropdown
-        var sel = document.getElementById('imagery-select');
-        if (sel) sel.value = key;
-
-        // Redraw pins/lines on top (they may have been covered)
-        drawPins();
-        drawBoundary();
-    }
-
-    // ==========================================
-    // PANEL COLLAPSE
-    // ==========================================
-    function togglePanel() {
-        var panel = document.getElementById('bottom-panel');
-        var btn = document.getElementById('collapse-btn');
-        panelCollapsed = !panelCollapsed;
-        if (panelCollapsed) {
-            panel.classList.remove('expanded');
-            panel.classList.add('collapsed');
-            btn.innerHTML = '&#9650;'; // up arrow
-        } else {
-            panel.classList.remove('collapsed');
-            panel.classList.add('expanded');
-            btn.innerHTML = '&#9660;'; // down arrow
-        }
-        // Tell Leaflet to recalculate map size
-        setTimeout(function(){ map.invalidateSize(); }, 350);
-    }
-
-    // ==========================================
-    // DRAWING
-    // ==========================================
-    function refreshAll() {
-        calculateAllPins();
-        pins=buildPinsArray();
-        drawPins(); drawBoundary(); renderPinList();
-        renderCalibratePanel(); updateNavigation(); renderValidation();
-    }
-
-    function drawPins() {
-        pinMarkers.forEach(function(m){map.removeLayer(m);});
-        pinMarkers=[];
-        pins.forEach(function(pin){
-            var kc=pin.isKnown?' known-pin':'';
-            var icon=L.divIcon({className:'',html:'<div class="pin-marker '+pin.type+kc+'">'+pin.id+'</div>',iconSize:[28,28],iconAnchor:[14,14]});
-            var marker=L.marker([pin.lat,pin.lon],{icon:icon})
-                .addTo(map)
-                .bindPopup('<b>'+pin.name+'</b><br>'+pin.description+'<br><small>'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</small>');
-            marker.on('click',function(){selectPin(pin.id);});
-            pinMarkers.push(marker);
-        });
-    }
-
-    function drawBoundary() {
-        pinLines.forEach(function(l){map.removeLayer(l);});
-        pinLines=[];
-        if(pins.length<6)return;
-        var byId={}; pins.forEach(function(p){byId[p.id]=p;});
-        if(byId[1]&&byId[2]&&byId[3]&&byId[4]){
-            pinLines.push(L.polyline([[byId[1].lat,byId[1].lon],[byId[2].lat,byId[2].lon],[byId[3].lat,byId[3].lon],[byId[4].lat,byId[4].lon],[byId[1].lat,byId[1].lon]],{color:'#e94560',weight:2,opacity:0.8,dashArray:'5,5'}).addTo(map));
-        }
-        if(byId[3]&&byId[4]&&byId[5]&&byId[6]){
-            pinLines.push(L.polyline([[byId[4].lat,byId[4].lon],[byId[5].lat,byId[5].lon],[byId[6].lat,byId[6].lon],[byId[3].lat,byId[3].lon]],{color:'#533483',weight:2,opacity:0.8,dashArray:'10,5'}).addTo(map));
-        }
-    }
-
-    // ==========================================
-    // PIN LIST
-    // ==========================================
-    function renderPinList() {
-        var list=document.getElementById('pin-list'); var html='';
-        // Sort by distance from user when GPS is active
-        var sorted=pins.slice();
-        if(userLat!==null){
-            sorted.sort(function(a,b){
-                return distanceBetween(userLat,userLon,a.lat,a.lon)-distanceBetween(userLat,userLon,b.lat,b.lon);
-            });
-        }
-        sorted.forEach(function(pin){
-            var sel=selectedPin===pin.id;
-            var dh='';
-            if(userLat!==null){
-                var dist=distanceBetween(userLat,userLon,pin.lat,pin.lon);
-                var brn=bearingBetween(userLat,userLon,pin.lat,pin.lon);
-                dh='<div class="pin-distance"><div class="dist">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="unit">ft</div><div class="bearing">'+formatBearing(brn)+'</div></div>';
-            }
-            var sc=pin.isKnown?'known':'computed';
-            var sl=pin.isKnown?'GPS Measured':(pin.source==='averaged'?'Averaged (2 anchors)':'Computed');
-            html+='<div class="pin-item'+(sel?' selected':'')+'" onclick="selectPin('+pin.id+')"><div class="pin-icon '+pin.type+'">'+pin.id+'</div><div class="pin-info"><div class="pin-name">'+pin.name+'</div><div class="pin-coords">'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div><div class="pin-source '+sc+'">'+sl+'</div></div>'+dh+'</div>';
-        });
-        list.innerHTML=html;
-    }
-
-    function selectPin(id) {
-        selectedPin=id; renderPinList(); updateNavigation();
-        var pin=pins.find(function(p){return p.id===id;});
-        if(pin) map.setView([pin.lat,pin.lon],Math.max(map.getZoom(),17));
-    }
-
-    // ==========================================
-    // NAVIGATION
-    // ==========================================
-    function updateNavigation() {
-        var display=document.getElementById('nav-display');
-        if(!selectedPin){display.innerHTML='<div style="color:#888;padding:15px;">Select a pin to navigate</div>';return;}
-        var pin=pins.find(function(p){return p.id===selectedPin;});
-        if(!pin)return;
-        if(userLat===null){
-            display.innerHTML='<div class="nav-target-name">'+pin.name+'</div><div style="color:#888;padding:8px;">Enable GPS to navigate</div><div class="coord-display">Target: '+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div>';
-            return;
-        }
-        var dist=distanceBetween(userLat,userLon,pin.lat,pin.lon);
-        var brng=bearingBetween(userLat,userLon,pin.lat,pin.lon);
-        var rot=brng; if(userHeading!==null)rot=brng-userHeading;
-        var sn=pin.isKnown?'<span style="color:#4ecca3">GPS Measured</span>':'<span style="color:#f0c040">Computed (~10ft radius)</span>';
-        // Proximity alert
-        var prox='';
-        if(dist<=5) prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:700;text-align:center;">You are ON the pin! Probe here.</div>';
-        else if(dist<=10) prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:600;text-align:center;">Within 10 ft - start searching!</div>';
-        else if(dist<=25) prox='<div style="background:#3d2e00;color:#f0c040;padding:6px;border-radius:6px;margin-bottom:6px;text-align:center;">Getting close (~'+Math.round(dist)+' ft)</div>';
-        display.innerHTML='<div class="nav-target-name">'+pin.name+'</div>'+prox+'<div class="nav-compass"><span class="direction-label dir-n">N</span><span class="direction-label dir-s">S</span><span class="direction-label dir-e">E</span><span class="direction-label dir-w">W</span><div class="arrow" style="transform:translate(-50%,-100%) rotate('+rot+'deg)"></div><div class="center-dot"></div></div><div class="nav-stats"><div class="nav-stat"><div class="value">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="label">Feet</div></div><div class="nav-stat"><div class="value">'+formatBearing(brng).split('(')[0].trim()+'</div><div class="label">'+Math.round(brng)+'\u00B0</div></div></div><div class="coord-display">You: '+userLat.toFixed(6)+', '+userLon.toFixed(6)+'<br>Pin: '+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'<br>'+sn+'</div>';
-    }
-
-    function centerOnUser(){if(userLat!==null){map.setView([userLat,userLon],18);}else{updateGPSStatus('Enable GPS first','error');}}
-    function centerOnPins(){if(pins.length===0)return;map.fitBounds(L.latLngBounds(pins.map(function(p){return[p.lat,p.lon];})),{padding:[40,40]});}
-
-    // ==========================================
-    // CALIBRATION
-    // ==========================================
-    function renderCalibratePanel() {
-        var html='';
-        for(var id=1;id<=6;id++){
-            var ik=knownPins[id]!==undefined;
-            var c=pinCoords[id];
-            var lv,ov;
-            if(ik){
-                lv=knownPins[id].lat;
-                ov=knownPins[id].lon;
-            } else {
-                lv=c?c.lat.toFixed(6):'';
-                ov=c?c.lon.toFixed(6):'';
-            }
-            html+='<div class="calibrate-pin-row"><div class="pin-label" style="color:'+(ik?'#4ecca3':'#888')+'">Pin '+id+'</div><input type="text" id="cal-lat-'+id+'" value="'+lv+'" placeholder="Lat"><input type="text" id="cal-lon-'+id+'" value="'+ov+'" placeholder="Lon">'+(ik?'<span class="known-badge">KNOWN</span>':'<span style="font-size:9px;color:#666;flex-shrink:0;">computed</span>')+'</div>';
-        }
-        html+='<p style="font-size:10px;color:#666;margin-top:4px;">Tip: Clear both fields for a pin to make it computed from known anchors.</p>';
-        document.getElementById('calibrate-pins').innerHTML=html;
-        var bh='<div style="display:flex;flex-wrap:wrap;gap:4px;">';
-        for(var id=1;id<=6;id++){bh+='<button class="btn small" onclick="setFromGPS('+id+')">Pin '+id+'</button>';}
-        bh+='</div>';
-        document.getElementById('gps-set-buttons').innerHTML=bh;
-        renderValidation();
-    }
-
-    function renderValidation() {
-        var results=validatePins();
-        var html='<div class="validation-box"><h3>Validation</h3>';
-        for(var i=0;i<results.length;i++){
-            var r=results[i];
-            if(r.p1Source==='known'||r.p2Source==='known'){
-                var ec='val-good'; if(r.distError>5)ec='val-warn'; if(r.distError>15)ec='val-bad';
-                html+='<div class="val-row"><span class="val-label">'+r.from+'&rarr;'+r.to+'</span><span class="val-value '+ec+'">'+r.actualDist.toFixed(1)+'\'/'+r.platDist+'\' (err:'+r.distError.toFixed(1)+'\')</span></div>';
-            }
-        }
-        html+='<div class="val-row" style="margin-top:4px"><span class="val-label">Anchors:</span><span class="val-value val-good">'+Object.keys(knownPins).length+'/6</span></div></div>';
-        document.getElementById('validation-results').innerHTML=html;
-    }
-
-    function applyCalibration() {
-        var nk={};
-        for(var id=1;id<=6;id++){
-            var li=document.getElementById('cal-lat-'+id).value.trim();
-            var oi=document.getElementById('cal-lon-'+id).value.trim();
-            if(li&&oi){
-                var la=parseFloat(li),lo=parseFloat(oi);
-                if(!isNaN(la)&&!isNaN(lo)&&la>30&&la<40&&lo<-90&&lo>-100){
-                    nk[id]={lat:la,lon:lo};
-                }
-            }
-        }
-        knownPins=nk; saveToStorage(); refreshAll();
-        updateGPSStatus('Recalculated from '+Object.keys(knownPins).length+' anchors','active');
-    }
-
-    function resetCalibration() {
-        knownPins={5:{lat:35.61714,lon:-93.90707},6:{lat:35.61710,lon:-93.90588}};
-        saveToStorage(); refreshAll();
-        updateGPSStatus('Reset to default anchors','active');
-    }
-
-    function setFromGPS(pinId) {
-        if(userLat===null){updateGPSStatus('Enable GPS first','error');return;}
-        knownPins[pinId]={lat:userLat,lon:userLon};
-        saveToStorage(); refreshAll();
-        updateGPSStatus('Pin '+pinId+' set from GPS','active');
-    }
-
-    // ==========================================
-    // STORAGE
-    // ==========================================
-    function saveToStorage(){try{localStorage.setItem('surveyPins',JSON.stringify(knownPins));}catch(e){}}
-    function loadFromStorage(){try{var s=localStorage.getItem('surveyPins');if(s)knownPins=JSON.parse(s);}catch(e){}}
-
-    // ==========================================
-    // GPS
-    // ==========================================
-    function toggleGPS(){if(gpsActive){stopGPS();}else{startGPS();}}
-
-    function startGPS() {
-        if(!navigator.geolocation){updateGPSStatus('No GPS','error');return;}
-        updateGPSStatus('Acquiring...','');
-
-        // Request screen wake lock to prevent sleep during navigation
-        if ('wakeLock' in navigator) {
-            navigator.wakeLock.request('screen').then(function(wl){
-                wakeLock=wl;
-                wl.addEventListener('release',function(){wakeLock=null;});
-            }).catch(function(){});
-        }
-
-        gpsWatchId=navigator.geolocation.watchPosition(function(pos){
-            userLat=pos.coords.latitude; userLon=pos.coords.longitude;
-            var acc=pos.coords.accuracy;
-            var ac='good',al='Good'; if(acc>10){ac='fair';al='Fair';} if(acc>20){ac='poor';al='Poor';}
-            updateGPSStatus('GPS: <span class="accuracy-badge '+ac+'">'+acc.toFixed(1)+'m ('+al+')</span>','active');
-            updateUserMarker(acc); renderPinList(); updateNavigation();
-
-            // Proximity vibration: buzz when within 10ft of selected pin
-            if(selectedPin && navigator.vibrate) {
-                var pin=pins.find(function(p){return p.id===selectedPin;});
-                if(pin) {
-                    var dist=distanceBetween(userLat,userLon,pin.lat,pin.lon);
-                    var now=Date.now();
-                    if(dist<=10 && now-lastProximityVibrate>5000) {
-                        navigator.vibrate([100,50,100,50,200]);
-                        lastProximityVibrate=now;
+    // Migrate old surveyPins key
+    try {
+        var oldPins = localStorage.getItem('surveyPins');
+        if (oldPins) {
+            var parsed = JSON.parse(oldPins);
+            var mossy = appData.properties.find(function(p){ return p.id === builtinId; });
+            if (mossy) {
+                var idToName = {1:'NW Corner (POB)',2:'NE Corner',3:'E Mid',4:'W Mid',5:'SW Corner',6:'SE Corner'};
+                for (var k in parsed) {
+                    var name = idToName[k];
+                    if (name && parsed[k] && parsed[k].lat && parsed[k].lon) {
+                        if (!mossy.knownPins) mossy.knownPins = {};
+                        mossy.knownPins[name] = {lat:parsed[k].lat, lon:parsed[k].lon};
                     }
                 }
             }
+            localStorage.removeItem('surveyPins');
+            saveData();
+        }
+    } catch(e) {}
+}
 
-            gpsActive=true;
-            document.getElementById('btn-gps').textContent='GPS On';
-            document.getElementById('btn-gps').classList.add('active');
-        },function(err){updateGPSStatus('Error: '+err.message,'error');},{enableHighAccuracy:true,maximumAge:2000,timeout:10000});
+function getActiveProperty() {
+    return appData.properties.find(function(p){ return p.id === appData.activePropertyId; }) || null;
+}
 
-        if(window.DeviceOrientationEvent){
-            if(typeof DeviceOrientationEvent.requestPermission==='function'){
-                DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')window.addEventListener('deviceorientation',handleOrientation);}).catch(function(){});
-            }else{window.addEventListener('deviceorientation',handleOrientation);}
+// =====================================================================
+// BFS PIN CALCULATION ENGINE
+// =====================================================================
+function calcPinsForProperty(prop) {
+    if (!prop || !prop.edges || prop.edges.length === 0) return {};
+    var knownPins = prop.knownPins || {};
+
+    // Build undirected graph
+    var graph = {};
+    var i, e;
+    for (i = 0; i < prop.edges.length; i++) {
+        e = prop.edges[i];
+        if (!graph[e.from]) graph[e.from] = [];
+        if (!graph[e.to])   graph[e.to]   = [];
+        graph[e.from].push({target:e.to,   azimuth:e.azimuth,                dist:e.dist});
+        graph[e.to  ].push({target:e.from, azimuth:reverseAzimuth(e.azimuth), dist:e.dist});
+    }
+
+    // Collect all pin names
+    var allPinNames = [];
+    var seenNames = {};
+    for (i = 0; i < prop.edges.length; i++) {
+        e = prop.edges[i];
+        if (!seenNames[e.from]) { seenNames[e.from]=true; allPinNames.push(e.from); }
+        if (!seenNames[e.to])   { seenNames[e.to  ]=true; allPinNames.push(e.to);   }
+    }
+
+    // BFS from each known anchor
+    var comps = {};
+    var anchorName, ac, visited, queue, cur, nb, cp, j;
+    for (anchorName in knownPins) {
+        ac = knownPins[anchorName];
+        if (!ac || !ac.lat || !ac.lon) continue;
+        if (!seenNames[anchorName]) continue;
+        visited = {};
+        visited[anchorName] = true;
+        queue = [{id:anchorName, lat:ac.lat, lon:ac.lon}];
+        if (!comps[anchorName]) comps[anchorName] = [];
+        comps[anchorName].push({lat:ac.lat, lon:ac.lon, fromAnchor:anchorName, known:true});
+        while (queue.length > 0) {
+            cur = queue.shift();
+            var neighbors = graph[cur.id] || [];
+            for (j = 0; j < neighbors.length; j++) {
+                nb = neighbors[j];
+                if (visited[nb.target]) continue;
+                visited[nb.target] = true;
+                cp = movePoint(cur.lat, cur.lon, nb.azimuth, nb.dist);
+                if (!comps[nb.target]) comps[nb.target] = [];
+                comps[nb.target].push({lat:cp.lat, lon:cp.lon, fromAnchor:anchorName, known:false});
+                queue.push({id:nb.target, lat:cp.lat, lon:cp.lon});
+            }
         }
     }
 
-    function stopGPS() {
-        if(gpsWatchId!==null){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null;}
-        window.removeEventListener('deviceorientation',handleOrientation);
-        gpsActive=false;
-        document.getElementById('btn-gps').textContent='GPS Off';
-        document.getElementById('btn-gps').classList.remove('active');
-        updateGPSStatus('GPS off','');
-        if(userMarker){map.removeLayer(userMarker);userMarker=null;}
-        if(userAccuracyCircle){map.removeLayer(userAccuracyCircle);userAccuracyCircle=null;}
-        // Release wake lock
-        if(wakeLock){wakeLock.release().catch(function(){});wakeLock=null;}
+    var pinCoords = {};
+    for (i = 0; i < allPinNames.length; i++) {
+        var nm = allPinNames[i];
+        var cs = comps[nm] || [];
+        if (cs.length === 0) continue;
+        var kc = null;
+        for (j = 0; j < cs.length; j++) { if (cs[j].known) { kc = cs[j]; break; } }
+        if (kc) {
+            pinCoords[nm] = {lat:kc.lat, lon:kc.lon, source:'known', anchors:[kc.fromAnchor]};
+        } else {
+            var sumLat=0, sumLon=0;
+            for (j=0;j<cs.length;j++) { sumLat+=cs[j].lat; sumLon+=cs[j].lon; }
+            var anch = cs.map(function(c){return c.fromAnchor;});
+            pinCoords[nm] = {lat:sumLat/cs.length, lon:sumLon/cs.length, source:cs.length>1?'averaged':'computed', anchors:anch};
+        }
+    }
+    return pinCoords;
+}
+
+// =====================================================================
+// MAP & GPS STATE
+// =====================================================================
+var map = null, mapInitialized = false;
+var pinMarkers = [], pinLines = [];
+var userMarker = null, userAccuracyCircle = null;
+var selectedPin = null;
+var userLat = null, userLon = null, userHeading = null;
+var gpsWatchId = null, gpsActive = false;
+var panelCollapsed = false;
+var wakeLock = null;
+var lastProximityVibrate = 0;
+var baseLayerMap = {}, activeBaseKey = 'esri', layerControl = null;
+var dropdownKeyToName = {}, nameToDropdownKey = {};
+var currentPinCoords = {};
+
+// =====================================================================
+// HOME SCREEN
+// =====================================================================
+function showHome() {
+    stopGPS();
+    document.getElementById('screen-map').classList.remove('active');
+    document.getElementById('screen-home').classList.add('active');
+    renderHomeList();
+}
+
+function renderHomeList() {
+    var list = document.getElementById('home-list');
+    var props = appData.properties;
+    if (props.length === 0) {
+        list.innerHTML = '<div class="home-empty">No properties yet.<br>Tap <b>+ New Property</b> to add one.</div>';
+        return;
+    }
+    var html = '';
+    for (var i=0; i<props.length; i++) {
+        var p = props[i];
+        var isBuiltin = p.builtin ? ' builtin' : '';
+        var builtinTag = p.builtin ? ' <span class="chip">Built-in</span>' : '';
+        var edgeCount = (p.edges||[]).length;
+        var anchCount = Object.keys(p.knownPins||{}).length;
+        html += '<div class="property-card'+isBuiltin+'">'
+              + '<div class="property-card-title">'+escHtml(p.name)+builtinTag+'</div>'
+              + '<div class="property-card-sub">'+(p.address?escHtml(p.address):p.legal?escHtml(p.legal):'No address')+'</div>'
+              + '<div class="property-card-sub">'+edgeCount+' calls &bull; '+anchCount+' anchor'+(anchCount!==1?'s':'')+'</div>'
+              + '<div class="property-card-actions">'
+              + '<button class="btn primary small" onclick="openProperty(\''+p.id+'\')">Open</button>'
+              + (p.builtin?'':'<button class="btn danger small" onclick="deleteProperty(\''+p.id+'\',event)">Delete</button>')
+              + '</div></div>';
+    }
+    list.innerHTML = html;
+}
+
+function openProperty(id) {
+    appData.activePropertyId = id;
+    saveData();
+    var prop = getActiveProperty();
+    if (!prop) return;
+    document.getElementById('map-prop-name').textContent = prop.name;
+    document.getElementById('screen-home').classList.remove('active');
+    document.getElementById('screen-map').classList.add('active');
+    selectedPin = null;
+    currentPinCoords = calcPinsForProperty(prop);
+    if (!mapInitialized) {
+        initMap();
+        mapInitialized = true;
+    } else {
+        refreshAll();
+        setTimeout(function(){ map.invalidateSize(); centerOnPins(); }, 200);
+    }
+}
+
+function deleteProperty(id, evt) {
+    evt.stopPropagation();
+    if (!confirm('Delete this property?')) return;
+    appData.properties = appData.properties.filter(function(p){ return p.id!==id; });
+    if (appData.activePropertyId===id) appData.activePropertyId=null;
+    saveData();
+    renderHomeList();
+}
+
+// =====================================================================
+// WIZARD STATE
+// =====================================================================
+var wizardStep = 0;
+var wizardEdges = [];
+var parsedCalls = [];
+var anchorMode = 'plss';
+var plssResult = null;
+
+function openWizard() {
+    wizardStep=0; wizardEdges=[]; parsedCalls=[]; anchorMode='plss'; plssResult=null;
+    var clearIds=['w-name','w-address','w-legal','w-section','w-township','w-range','w-state',
+                  'edge-bearing','edge-dist','edge-from','edge-to','paste-text',
+                  'manual-anchor-lat','manual-anchor-lon'];
+    for (var i=0;i<clearIds.length;i++) {
+        var el=document.getElementById(clearIds[i]);
+        if(el) el.value='';
+    }
+    document.getElementById('manual-edge-error').textContent='';
+    document.getElementById('parsed-review').style.display='none';
+    switchEdgeMode('manual');
+    renderEdgeList();
+    updateWizardStep();
+    document.getElementById('modal-wizard').classList.add('active');
+}
+
+function closeWizard() {
+    document.getElementById('modal-wizard').classList.remove('active');
+}
+
+function updateWizardStep() {
+    for (var i=0;i<3;i++) {
+        document.getElementById('wstep-'+i).classList.toggle('active',i===wizardStep);
+        var dot=document.getElementById('wdot-'+i);
+        dot.className='wizard-dot'+(i<wizardStep?' done':i===wizardStep?' active':'');
+    }
+    document.getElementById('wizard-prev').style.display = wizardStep>0?'':'none';
+    document.getElementById('wizard-next').textContent = wizardStep===2?'Save Property':'Next';
+    var titles=['Step 1: Property Info','Step 2: Plat Calls','Step 3: Anchor Location'];
+    document.getElementById('wizard-title').textContent = titles[wizardStep];
+    if (wizardStep===2) updateStep3();
+}
+
+function wizardNext() {
+    if (wizardStep===0) {
+        var name=document.getElementById('w-name').value.trim();
+        if(!name){alert('Please enter a property name.');return;}
+        wizardStep=1; updateWizardStep();
+    } else if (wizardStep===1) {
+        if(wizardEdges.length===0){if(!confirm('No plat calls added. Continue anyway?'))return;}
+        wizardStep=2; updateWizardStep();
+    } else if (wizardStep===2) {
+        saveNewProperty();
+    }
+}
+
+function wizardPrev() {
+    if(wizardStep>0){wizardStep--;updateWizardStep();}
+}
+
+// =====================================================================
+// WIZARD - EDGE ENTRY
+// =====================================================================
+function switchEdgeMode(mode) {
+    var modes=['manual','paste','scan'];
+    for(var i=0;i<modes.length;i++){
+        document.getElementById('mode-'+modes[i]).classList.toggle('active',modes[i]===mode);
+    }
+    document.querySelectorAll('.mode-tab').forEach(function(t,i){
+        t.classList.toggle('active',modes[i]===mode);
+    });
+}
+
+function addEdgeManual() {
+    var errEl=document.getElementById('manual-edge-error');
+    errEl.textContent='';
+    var bearingStr=document.getElementById('edge-bearing').value.trim();
+    var distStr=document.getElementById('edge-dist').value.trim();
+    var from=document.getElementById('edge-from').value.trim();
+    var to=document.getElementById('edge-to').value.trim();
+    if(!bearingStr||!distStr||!from||!to){errEl.textContent='All four fields are required.';return;}
+    var az=parseBearingString(bearingStr);
+    if(az===null){errEl.textContent='Could not parse bearing. Try: S 87\u00B012\'31" E';return;}
+    var dist=parseFloat(distStr);
+    if(isNaN(dist)||dist<=0){errEl.textContent='Distance must be a positive number.';return;}
+    wizardEdges.push({from:from,to:to,azimuth:az,dist:dist,bearingStr:bearingStr});
+    renderEdgeList();
+    document.getElementById('edge-bearing').value='';
+    document.getElementById('edge-dist').value='';
+    document.getElementById('edge-from').value=to;
+    document.getElementById('edge-to').value='';
+    document.getElementById('edge-bearing').focus();
+}
+
+function removeEdge(idx) {
+    wizardEdges.splice(idx,1);
+    renderEdgeList();
+}
+
+function renderEdgeList() {
+    var container=document.getElementById('edge-list');
+    document.getElementById('edge-count').textContent=wizardEdges.length;
+    if(wizardEdges.length===0){
+        container.innerHTML='<div style="color:#555;font-size:11px;padding:6px;">No calls added yet.</div>';return;
+    }
+    var html='<table style="width:100%;font-size:11px;border-collapse:collapse;">'
+            +'<tr style="color:#888;"><th style="text-align:left;padding:3px;">From</th><th style="text-align:left;padding:3px;">To</th><th style="padding:3px;">Bearing</th><th style="padding:3px;">Dist</th><th></th></tr>';
+    for(var i=0;i<wizardEdges.length;i++){
+        var e=wizardEdges[i];
+        html+='<tr style="border-top:1px solid #0f3460;">'
+             +'<td style="padding:3px;">'+escHtml(e.from)+'</td>'
+             +'<td style="padding:3px;">'+escHtml(e.to)+'</td>'
+             +'<td style="padding:3px;font-family:monospace;white-space:nowrap;">'+escHtml(e.bearingStr)+'</td>'
+             +'<td style="padding:3px;text-align:right;font-family:monospace;">'+e.dist+'\'</td>'
+             +'<td style="padding:3px;"><button class="btn danger small" onclick="removeEdge('+i+')">&times;</button></td>'
+             +'</tr>';
+    }
+    html+='</table>';
+    container.innerHTML=html;
+}
+
+// =====================================================================
+// WIZARD - PASTE TEXT PARSER
+// =====================================================================
+function parsePastedText() {
+    var text=document.getElementById('paste-text').value;
+    parsedCalls=parseCallsFromText(text);
+    if(parsedCalls.length===0){alert('No bearing/distance calls found. Check the format.');return;}
+    showParsedReview(parsedCalls);
+}
+
+function showParsedReview(calls) {
+    document.getElementById('parsed-review').style.display='';
+    var html='<table class="edge-review-table"><thead><tr><th>Bearing</th><th>Dist</th><th>From Pin</th><th>To Pin</th></tr></thead><tbody>';
+    for(var i=0;i<calls.length;i++){
+        var c=calls[i];
+        html+='<tr>'
+             +'<td style="font-family:monospace;white-space:nowrap;">'+escHtml(c.bearingStr)+'</td>'
+             +'<td style="font-family:monospace;">'+c.dist+'\'</td>'
+             +'<td><input id="pr-from-'+i+'" value="" placeholder="Pin name" /></td>'
+             +'<td><input id="pr-to-'+i+'" value="" placeholder="Pin name" /></td>'
+             +'</tr>';
+    }
+    html+='</tbody></table>';
+    document.getElementById('parsed-review-table').innerHTML=html;
+}
+
+function acceptParsedEdges() {
+    var added=[];
+    for(var i=0;i<parsedCalls.length;i++){
+        var c=parsedCalls[i];
+        var fromEl=document.getElementById('pr-from-'+i);
+        var toEl=document.getElementById('pr-to-'+i);
+        var from=(fromEl?fromEl.value:'').trim();
+        var to=(toEl?toEl.value:'').trim();
+        if(from&&to){added.push({from:from,to:to,azimuth:c.azimuth,dist:c.dist,bearingStr:c.bearingStr});}
+    }
+    if(added.length===0){alert('Please fill in at least one From/To name pair.');return;}
+    wizardEdges=wizardEdges.concat(added);
+    renderEdgeList();
+    document.getElementById('parsed-review').style.display='none';
+    parsedCalls=[];
+}
+
+// =====================================================================
+// WIZARD - OCR SCAN
+// =====================================================================
+var tesseractReady=false, tesseractWorker=null;
+
+function ensureTesseract(cb) {
+    if(tesseractReady&&tesseractWorker){cb();return;}
+    var st=document.getElementById('ocr-status');
+    st.style.display=''; st.className='ocr-status working'; st.textContent='Loading Tesseract OCR...';
+    var script=document.createElement('script');
+    script.src='https://unpkg.com/tesseract.js@5/dist/tesseract.min.js';
+    script.onload=function(){
+        Tesseract.createWorker('eng',1,{
+            logger:function(m){if(m.status==='recognizing text'){st.textContent='Scanning... '+Math.round((m.progress||0)*100)+'%';}}
+        }).then(function(worker){
+            tesseractWorker=worker; tesseractReady=true; cb();
+        }).catch(function(e){
+            st.className='ocr-status error'; st.textContent='Tesseract error: '+e.message;
+        });
+    };
+    script.onerror=function(){st.className='ocr-status error';st.textContent='Failed to load Tesseract.js.';};
+    document.head.appendChild(script);
+}
+
+function runOCR(input) {
+    if(!input.files||!input.files[0])return;
+    var file=input.files[0];
+    var st=document.getElementById('ocr-status');
+    st.style.display=''; st.className='ocr-status working'; st.textContent='Preparing...';
+    ensureTesseract(function(){
+        st.textContent='Scanning image...';
+        var url=URL.createObjectURL(file);
+        tesseractWorker.recognize(url).then(function(result){
+            URL.revokeObjectURL(url);
+            var text=result.data.text;
+            st.className='ocr-status done'; st.textContent='Scan complete.';
+            var preview=document.getElementById('ocr-preview');
+            preview.style.display=''; preview.textContent=text;
+            parsedCalls=parseCallsFromText(text);
+            if(parsedCalls.length===0){
+                st.className='ocr-status error'; st.textContent='No bearing/distance calls found in image.';
+            } else {
+                st.textContent='Found '+parsedCalls.length+' call'+(parsedCalls.length!==1?'s':'')+'. Review below.';
+                showParsedReview(parsedCalls);
+            }
+        }).catch(function(e){
+            st.className='ocr-status error'; st.textContent='OCR error: '+e.message;
+        });
+    });
+}
+
+// =====================================================================
+// WIZARD - STEP 3
+// =====================================================================
+function updateStep3() {
+    document.getElementById('plss-preview-sec').textContent=document.getElementById('w-section').value||'?';
+    document.getElementById('plss-preview-twp').textContent=document.getElementById('w-township').value||'?';
+    document.getElementById('plss-preview-rng').textContent=document.getElementById('w-range').value||'?';
+    var pinNames=getWizardPinNames();
+    ['plss-anchor-pin','manual-anchor-pin'].forEach(function(selId){
+        var sel=document.getElementById(selId);
+        sel.innerHTML=pinNames.map(function(n){return '<option value="'+escHtml(n)+'">'+escHtml(n)+'</option>';}).join('');
+    });
+}
+
+function getWizardPinNames() {
+    var names={}, arr=[];
+    for(var i=0;i<wizardEdges.length;i++){
+        if(!names[wizardEdges[i].from]){names[wizardEdges[i].from]=true;arr.push(wizardEdges[i].from);}
+        if(!names[wizardEdges[i].to]){names[wizardEdges[i].to]=true;arr.push(wizardEdges[i].to);}
+    }
+    return arr;
+}
+
+function selectAnchorMode(mode) {
+    anchorMode=mode;
+    ['plss','manual','skip'].forEach(function(m){
+        document.getElementById('anchor-card-'+m).classList.toggle('selected',m===mode);
+    });
+    document.getElementById('anchor-plss-panel').style.display  =mode==='plss'   ?'':'none';
+    document.getElementById('anchor-manual-panel').style.display=mode==='manual' ?'':'none';
+}
+
+function fetchPLSS() {
+    var sec =document.getElementById('w-section').value.trim();
+    var twp =document.getElementById('w-township').value.trim().toUpperCase();
+    var rng =document.getElementById('w-range').value.trim().toUpperCase();
+    var state=document.getElementById('w-state').value.trim()||'Arkansas';
+    var st  =document.getElementById('plss-status');
+    if(!sec||!twp||!rng){st.textContent='Enter Section, Township, and Range first.';st.style.color='#e94560';return;}
+
+    var twpM=twp.match(/^(\d+)([NS])$/);
+    var rngM=rng.match(/^(\d+)([EW])$/);
+    if(!twpM||!rngM){st.textContent='Format: Township as "11N", Range as "27W".';st.style.color='#e94560';return;}
+
+    st.textContent='Querying geocoder...'; st.style.color='#f0c040';
+    var btn=document.getElementById('btn-fetch-plss');
+    btn.disabled=true;
+
+    var query='Section '+sec+', Township '+twpM[1]+' '+twpM[2]+', Range '+rngM[1]+' '+rngM[2]+', '+state;
+    var url='https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates'
+           +'?singleLine='+encodeURIComponent(query)+'&f=json&maxLocations=1&outFields=*';
+
+    fetch(url).then(function(r){return r.json();}).then(function(data){
+        btn.disabled=false;
+        if(data.candidates&&data.candidates.length>0){
+            var cand=data.candidates[0];
+            plssResult={lat:cand.location.y, lon:cand.location.x};
+            st.textContent='Found: '+plssResult.lat.toFixed(5)+', '+plssResult.lon.toFixed(5)+' (score: '+Math.round(cand.score)+')';
+            st.style.color=cand.score>70?'#4ecca3':'#f0c040';
+        } else {
+            st.textContent='No result. Try manual coordinate entry.'; st.style.color='#e94560';
+        }
+    }).catch(function(e){
+        btn.disabled=false;
+        st.textContent='Network error: '+e.message; st.style.color='#e94560';
+    });
+}
+
+// =====================================================================
+// WIZARD - SAVE
+// =====================================================================
+function saveNewProperty() {
+    var name=document.getElementById('w-name').value.trim();
+    if(!name){alert('Property name is required.');wizardStep=0;updateWizardStep();return;}
+
+    var prop={
+        id:'prop-'+Date.now(),
+        name:name,
+        address:document.getElementById('w-address').value.trim(),
+        legal:document.getElementById('w-legal').value.trim(),
+        section:document.getElementById('w-section').value.trim(),
+        township:document.getElementById('w-township').value.trim(),
+        range:document.getElementById('w-range').value.trim(),
+        state:document.getElementById('w-state').value.trim(),
+        edges:wizardEdges.slice(),
+        knownPins:{},
+        notes:''
+    };
+
+    if(anchorMode==='plss'&&plssResult){
+        var pinSel=document.getElementById('plss-anchor-pin');
+        var pinName=pinSel?pinSel.value:'';
+        if(pinName) prop.knownPins[pinName]={lat:plssResult.lat,lon:plssResult.lon};
+    } else if(anchorMode==='manual'){
+        var mPin=document.getElementById('manual-anchor-pin').value;
+        var mLat=parseFloat(document.getElementById('manual-anchor-lat').value);
+        var mLon=parseFloat(document.getElementById('manual-anchor-lon').value);
+        if(mPin&&!isNaN(mLat)&&!isNaN(mLon)) prop.knownPins[mPin]={lat:mLat,lon:mLon};
     }
 
-    function handleOrientation(e){
-        if(e.webkitCompassHeading!==undefined){userHeading=e.webkitCompassHeading;}
-        else if(e.alpha!==null){userHeading=360-e.alpha;}
+    appData.properties.push(prop);
+    saveData();
+    closeWizard();
+    renderHomeList();
+    openProperty(prop.id);
+}
+
+// =====================================================================
+// MAP INIT
+// =====================================================================
+function initMap() {
+    map=L.map('map',{zoomControl:false,attributionControl:false});
+
+    baseLayerMap={
+        'esri':         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20}),
+        'esri_hybrid':  L.layerGroup([
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20}),
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.9}),
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.8})
+        ]),
+        'google':        L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{maxZoom:20}),
+        'google_hybrid': L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{maxZoom:20}),
+        'esri_clarity':  L.tileLayer('https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20}),
+        'usgs':          L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}',{maxZoom:20}),
+        'streets':       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}),
+        'topo':          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19})
+    };
+
+    dropdownKeyToName={
+        'esri':'ESRI Satellite','esri_hybrid':'ESRI Sat + Labels',
+        'google':'Google Satellite','google_hybrid':'Google Sat + Labels',
+        'esri_clarity':'ESRI Clarity','usgs':'USGS Aerial',
+        'streets':'Streets (OSM)','topo':'Topographic'
+    };
+    nameToDropdownKey={};
+    for(var k in dropdownKeyToName) nameToDropdownKey[dropdownKeyToName[k]]=k;
+
+    activeBaseKey='esri';
+    baseLayerMap[activeBaseKey].addTo(map);
+
+    var baseLayersForControl={};
+    for(var key in dropdownKeyToName) baseLayersForControl[dropdownKeyToName[key]]=baseLayerMap[key];
+
+    var roadsOverlay  =L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.7});
+    var topoOverlay   =L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,opacity:0.5});
+    var labelsOverlay =L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,opacity:0.7});
+    var overlays={'Roads & Labels':roadsOverlay,'Topo Contours':topoOverlay,'Place Names':labelsOverlay};
+
+    layerControl=L.control.layers(baseLayersForControl,overlays,{position:'topleft',collapsed:true});
+    layerControl.addTo(map);
+    L.control.zoom({position:'topright'}).addTo(map);
+
+    map.on('baselayerchange',function(e){
+        var k=nameToDropdownKey[e.name];
+        if(k){activeBaseKey=k;var sel=document.getElementById('imagery-select');if(sel)sel.value=k;}
+    });
+
+    var ImageryControl=L.Control.extend({
+        options:{position:'topleft'},
+        onAdd:function(){
+            var div=L.DomUtil.create('div','imagery-control');
+            L.DomEvent.disableClickPropagation(div);
+            L.DomEvent.disableScrollPropagation(div);
+            var opts='',order=['esri','esri_hybrid','google','google_hybrid','esri_clarity','usgs','streets','topo'];
+            for(var i=0;i<order.length;i++){
+                var ki=order[i];
+                opts+='<option value="'+ki+'"'+(ki===activeBaseKey?' selected':'')+'>'+dropdownKeyToName[ki]+'</option>';
+            }
+            div.innerHTML='<h4>Map Source</h4><select id="imagery-select">'+opts+'</select><div class="note">Switch for clearer imagery.</div>';
+            return div;
+        }
+    });
+    new ImageryControl().addTo(map);
+
+    setTimeout(function(){
+        var sel=document.getElementById('imagery-select');
+        if(sel) sel.addEventListener('change',function(){switchImagery(this.value);});
+    },100);
+
+    refreshAll();
+    setTimeout(function(){map.invalidateSize();},300);
+}
+
+function switchImagery(key) {
+    if(key===activeBaseKey||!baseLayerMap[key])return;
+    if(baseLayerMap[activeBaseKey])map.removeLayer(baseLayerMap[activeBaseKey]);
+    activeBaseKey=key;
+    baseLayerMap[key].addTo(map);
+    if(baseLayerMap[key].bringToBack)baseLayerMap[key].bringToBack();
+    var sel=document.getElementById('imagery-select');
+    if(sel)sel.value=key;
+    drawPins();drawBoundary();
+}
+
+// =====================================================================
+// PANEL COLLAPSE
+// =====================================================================
+function togglePanel() {
+    panelCollapsed=!panelCollapsed;
+    var panel=document.getElementById('bottom-panel');
+    var btn=document.getElementById('collapse-btn');
+    panel.classList.toggle('collapsed',panelCollapsed);
+    panel.classList.toggle('expanded',!panelCollapsed);
+    btn.innerHTML=panelCollapsed?'&#9650;':'&#9660;';
+    setTimeout(function(){map.invalidateSize();},350);
+}
+
+// =====================================================================
+// DRAWING
+// =====================================================================
+function refreshAll() {
+    var prop=getActiveProperty();
+    currentPinCoords=calcPinsForProperty(prop);
+    drawPins();
+    drawBoundary();
+    renderPinList();
+    renderAnchorsPanel();
+    renderInfoPanel();
+    updateNavigation();
+}
+
+function getPinsArray() {
+    var prop=getActiveProperty();
+    if(!prop)return[];
+    var arr=[];
+    for(var name in currentPinCoords){
+        var c=currentPinCoords[name];
+        var isKnown=(prop.knownPins||{})[name]!==undefined;
+        arr.push({name:name,lat:c.lat,lon:c.lon,source:c.source,anchors:c.anchors,isKnown:isKnown});
+    }
+    return arr;
+}
+
+function drawPins() {
+    for(var i=0;i<pinMarkers.length;i++) map.removeLayer(pinMarkers[i]);
+    pinMarkers=[];
+    var pins=getPinsArray();
+    for(var i=0;i<pins.length;i++){
+        (function(pin){
+            var abbrev=pin.name.split(/[\s\-]/)[0].slice(0,4);
+            var cls='pin-marker'+(pin.isKnown?' known':'');
+            var icon=L.divIcon({className:'',html:'<div class="'+cls+'">'+escHtml(abbrev)+'</div>',iconSize:[28,28],iconAnchor:[14,14]});
+            var marker=L.marker([pin.lat,pin.lon],{icon:icon})
+                .addTo(map)
+                .bindPopup('<b>'+escHtml(pin.name)+'</b><br><small>'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</small><br><small>'+pin.source+'</small>');
+            marker.on('click',function(){selectPinByName(pin.name);});
+            pinMarkers.push(marker);
+        })(pins[i]);
+    }
+}
+
+function drawBoundary() {
+    for(var i=0;i<pinLines.length;i++) map.removeLayer(pinLines[i]);
+    pinLines=[];
+    var prop=getActiveProperty();
+    if(!prop||!prop.edges)return;
+    for(var i=0;i<prop.edges.length;i++){
+        var e=prop.edges[i];
+        var p1=currentPinCoords[e.from];
+        var p2=currentPinCoords[e.to];
+        if(!p1||!p2)continue;
+        var line=L.polyline([[p1.lat,p1.lon],[p2.lat,p2.lon]],{color:'#e94560',weight:2,opacity:0.8,dashArray:'5,5'}).addTo(map);
+        pinLines.push(line);
+    }
+}
+
+// =====================================================================
+// PIN LIST
+// =====================================================================
+function renderPinList() {
+    var list=document.getElementById('pin-list');
+    var pins=getPinsArray();
+    if(pins.length===0){
+        list.innerHTML='<div style="color:#555;font-size:12px;padding:12px;text-align:center;">No pins computed yet.<br>Add plat calls and set an anchor.</div>';
+        return;
+    }
+    if(userLat!==null){
+        pins.sort(function(a,b){
+            return distanceBetween(userLat,userLon,a.lat,a.lon)-distanceBetween(userLat,userLon,b.lat,b.lon);
+        });
+    }
+    var html='';
+    for(var i=0;i<pins.length;i++){
+        var pin=pins[i];
+        var sel=selectedPin===pin.name;
+        var dh='';
+        if(userLat!==null){
+            var dist=distanceBetween(userLat,userLon,pin.lat,pin.lon);
+            var brn=bearingBetween(userLat,userLon,pin.lat,pin.lon);
+            dh='<div class="pin-distance"><div class="dist">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="unit">ft</div><div class="bearing">'+formatBearing(brn).split('(')[0].trim()+'</div></div>';
+        }
+        var sc=pin.isKnown?'known':'computed';
+        var sl=pin.isKnown?'GPS Anchor':(pin.source==='averaged'?'Averaged':'Computed');
+        var pinCls='pin-icon'+(pin.isKnown?' known':'');
+        var abbrev=pin.name.split(/[\s\-]/)[0].slice(0,4);
+        var safeName=pin.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        html+='<div class="pin-item'+(sel?' selected':'')+'\" onclick="selectPinByName(\''+safeName+'\')">'
+             +'<div class="'+pinCls+'">'+escHtml(abbrev)+'</div>'
+             +'<div class="pin-info">'
+             +'<div class="pin-name">'+escHtml(pin.name)+'</div>'
+             +'<div class="pin-coords">'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div>'
+             +'<div class="pin-source '+sc+'">'+sl+'</div>'
+             +'</div>'+dh+'</div>';
+    }
+    list.innerHTML=html;
+}
+
+function selectPinByName(name) {
+    selectedPin=name;
+    renderPinList();
+    updateNavigation();
+    var c=currentPinCoords[name];
+    if(c) map.setView([c.lat,c.lon],Math.max(map.getZoom()||17,17));
+}
+
+// =====================================================================
+// NAVIGATION
+// =====================================================================
+function updateNavigation() {
+    var display=document.getElementById('nav-display');
+    if(!selectedPin){display.innerHTML='<div style="color:#888;padding:15px;">Select a pin to navigate</div>';return;}
+    var c=currentPinCoords[selectedPin];
+    if(!c){display.innerHTML='<div style="color:#888;padding:15px;">Pin not computed</div>';return;}
+    var prop=getActiveProperty();
+    var isKnown=prop&&(prop.knownPins||{})[selectedPin];
+    var sn=isKnown?'<span style="color:#4ecca3">GPS Anchor</span>':'<span style="color:#f0c040">Computed</span>';
+    if(userLat===null){
+        display.innerHTML='<div class="nav-target-name">'+escHtml(selectedPin)+'</div>'
+                         +'<div style="color:#888;padding:8px;">Enable GPS to navigate</div>'
+                         +'<div class="coord-display">Target: '+c.lat.toFixed(6)+', '+c.lon.toFixed(6)+'</div>';
+        return;
+    }
+    var dist=distanceBetween(userLat,userLon,c.lat,c.lon);
+    var brng=bearingBetween(userLat,userLon,c.lat,c.lon);
+    var rot=userHeading!==null?brng-userHeading:brng;
+    var prox='';
+    if(dist<=5)  prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:700;text-align:center;">You are ON the pin! Probe here.</div>';
+    else if(dist<=10)prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:600;text-align:center;">Within 10 ft - start searching!</div>';
+    else if(dist<=25)prox='<div style="background:#3d2e00;color:#f0c040;padding:6px;border-radius:6px;margin-bottom:6px;text-align:center;">Getting close (~'+Math.round(dist)+' ft)</div>';
+    display.innerHTML='<div class="nav-target-name">'+escHtml(selectedPin)+'</div>'
+        +prox
+        +'<div class="nav-compass">'
+        +'<span class="direction-label dir-n">N</span><span class="direction-label dir-s">S</span>'
+        +'<span class="direction-label dir-e">E</span><span class="direction-label dir-w">W</span>'
+        +'<div class="arrow" style="transform:translate(-50%,-100%) rotate('+rot+'deg)"></div>'
+        +'<div class="center-dot"></div></div>'
+        +'<div class="nav-stats">'
+        +'<div class="nav-stat"><div class="value">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="label">Feet</div></div>'
+        +'<div class="nav-stat"><div class="value">'+formatBearing(brng).split('(')[0].trim()+'</div><div class="label">'+Math.round(brng)+'\u00B0</div></div>'
+        +'</div>'
+        +'<div class="coord-display">You: '+userLat.toFixed(6)+', '+userLon.toFixed(6)+'<br>Pin: '+c.lat.toFixed(6)+', '+c.lon.toFixed(6)+'<br>'+sn+'</div>';
+}
+
+function centerOnUser() {
+    if(userLat!==null)map.setView([userLat,userLon],18);
+    else updateGPSStatus('Enable GPS first','error');
+}
+
+function centerOnPins() {
+    var pins=getPinsArray();
+    if(pins.length===0)return;
+    map.fitBounds(L.latLngBounds(pins.map(function(p){return[p.lat,p.lon];})),{padding:[40,40]});
+}
+
+// =====================================================================
+// ANCHORS PANEL
+// =====================================================================
+function renderAnchorsPanel() {
+    var prop=getActiveProperty();
+    if(!prop){document.getElementById('calibrate-pins').innerHTML='';return;}
+    var pins=getPinsArray();
+    var knownPins=prop.knownPins||{};
+    var html='';
+    for(var i=0;i<pins.length;i++){
+        var pin=pins[i];
+        var ik=knownPins[pin.name]!==undefined;
+        var lv=ik?knownPins[pin.name].lat:(currentPinCoords[pin.name]?currentPinCoords[pin.name].lat.toFixed(6):'');
+        var ov=ik?knownPins[pin.name].lon:(currentPinCoords[pin.name]?currentPinCoords[pin.name].lon.toFixed(6):'');
+        var safeId=pin.name.replace(/[^a-zA-Z0-9]/g,'-');
+        html+='<div class="calibrate-pin-row">'
+             +'<div class="pin-label" style="color:'+(ik?'#4ecca3':'#888')+'" title="'+escHtml(pin.name)+'">'+escHtml(pin.name.slice(0,12))+'</div>'
+             +'<input type="text" id="cal-lat-'+safeId+'" data-pin="'+escHtml(pin.name)+'" value="'+lv+'" placeholder="Lat" />'
+             +'<input type="text" id="cal-lon-'+safeId+'" value="'+ov+'" placeholder="Lon" />'
+             +(ik?'<span class="known-badge">KNOWN</span>':'<span style="font-size:9px;color:#666;flex-shrink:0;">computed</span>')
+             +'</div>';
+    }
+    html+='<p style="font-size:10px;color:#666;margin-top:4px;">Clear both fields to make a pin computed from anchors.</p>';
+    document.getElementById('calibrate-pins').innerHTML=html;
+
+    var bh='<div style="display:flex;flex-wrap:wrap;gap:4px;">';
+    for(var i=0;i<pins.length;i++){
+        var pin=pins[i];
+        var safe=pin.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        bh+='<button class="btn small" onclick="setFromGPS(\''+safe+'\')">'+escHtml(pin.name.slice(0,12))+'</button>';
+    }
+    bh+='</div>';
+    document.getElementById('gps-set-buttons').innerHTML=bh;
+    renderValidation();
+}
+
+function applyCalibration() {
+    var prop=getActiveProperty();
+    if(!prop)return;
+    var newKnown={};
+    var latInputs=document.querySelectorAll('#calibrate-pins input[data-pin]');
+    for(var i=0;i<latInputs.length;i++){
+        var latInput=latInputs[i];
+        var pinName=latInput.getAttribute('data-pin');
+        var safeId=pinName.replace(/[^a-zA-Z0-9]/g,'-');
+        var lonInput=document.getElementById('cal-lon-'+safeId);
+        var la=parseFloat(latInput.value.trim());
+        var lo=parseFloat(lonInput?lonInput.value.trim():'');
+        if(!isNaN(la)&&!isNaN(lo)&&la>-90&&la<90&&lo>-180&&lo<180){
+            newKnown[pinName]={lat:la,lon:lo};
+        }
+    }
+    prop.knownPins=newKnown;
+    saveData();
+    refreshAll();
+    updateGPSStatus('Recalculated from '+Object.keys(newKnown).length+' anchors','active');
+}
+
+function resetAnchors() {
+    var prop=getActiveProperty();
+    if(!prop)return;
+    if(prop.builtin){
+        prop.knownPins={'SW Corner':{lat:35.61714,lon:-93.90707},'SE Corner':{lat:35.61710,lon:-93.90588}};
+    } else {
+        prop.knownPins={};
+    }
+    saveData();
+    refreshAll();
+    updateGPSStatus('Anchors reset','active');
+}
+
+function setFromGPS(pinName) {
+    if(userLat===null){updateGPSStatus('Enable GPS first','error');return;}
+    var prop=getActiveProperty();
+    if(!prop)return;
+    if(!prop.knownPins)prop.knownPins={};
+    prop.knownPins[pinName]={lat:userLat,lon:userLon};
+    saveData();
+    refreshAll();
+    updateGPSStatus('Anchor set: '+pinName,'active');
+}
+
+function renderValidation() {
+    var prop=getActiveProperty();
+    if(!prop||!prop.edges){document.getElementById('validation-results').innerHTML='';return;}
+    var html='<div class="validation-box"><h3>Edge Validation</h3>';
+    var hasAny=false;
+    for(var i=0;i<prop.edges.length;i++){
+        var e=prop.edges[i];
+        var p1=currentPinCoords[e.from];
+        var p2=currentPinCoords[e.to];
+        if(!p1||!p2)continue;
+        var ad=distanceBetween(p1.lat,p1.lon,p2.lat,p2.lon);
+        var de=Math.abs(ad-e.dist);
+        var ec='val-good'; if(de>5)ec='val-warn'; if(de>15)ec='val-bad';
+        var fromIsKnown=(prop.knownPins||{})[e.from];
+        var toIsKnown=(prop.knownPins||{})[e.to];
+        if(fromIsKnown||toIsKnown){
+            html+='<div class="val-row"><span class="val-label">'+escHtml(e.from.slice(0,8))+'&rarr;'+escHtml(e.to.slice(0,8))+'</span>'
+                 +'<span class="val-value '+ec+'">'+ad.toFixed(1)+'\'/ '+e.dist+'\' (err:'+de.toFixed(1)+'\')</span></div>';
+            hasAny=true;
+        }
+    }
+    if(!hasAny)html+='<div style="color:#555;font-size:11px;">Set at least one anchor to see validation.</div>';
+    var anchCount=Object.keys(prop.knownPins||{}).length;
+    var pinCount=getPinsArray().length;
+    html+='<div class="val-row" style="margin-top:4px;"><span class="val-label">Anchors:</span><span class="val-value val-good">'+anchCount+'/'+pinCount+'</span></div>';
+    html+='</div>';
+    document.getElementById('validation-results').innerHTML=html;
+}
+
+// =====================================================================
+// INFO PANEL
+// =====================================================================
+function renderInfoPanel() {
+    var prop=getActiveProperty();
+    var el=document.getElementById('info-content');
+    if(!prop){el.innerHTML='';return;}
+    var edgeRows='';
+    if(prop.edges&&prop.edges.length>0){
+        edgeRows='<table class="edge-table">';
+        for(var i=0;i<prop.edges.length;i++){
+            var e=prop.edges[i];
+            edgeRows+='<tr>'
+                     +'<td style="color:#888;">'+escHtml(e.from)+'&rarr;'+escHtml(e.to)+'</td>'
+                     +'<td style="font-family:monospace;white-space:nowrap;">'+escHtml(e.bearingStr)+'</td>'
+                     +'<td style="font-family:monospace;text-align:right;">'+e.dist+'\'</td>'
+                     +'</tr>';
+        }
+        edgeRows+='</table>';
+    } else {
+        edgeRows='<div style="color:#555;font-size:11px;">No plat calls entered.</div>';
+    }
+    el.innerHTML='<div class="info-text">'
+        +'<strong>Name:</strong> '+escHtml(prop.name)+'<br>'
+        +(prop.address?'<strong>Address:</strong> '+escHtml(prop.address)+'<br>':'')
+        +(prop.legal?'<strong>Legal:</strong> '+escHtml(prop.legal)+'<br>':'')
+        +(prop.section?'<strong>PLSS:</strong> Sec '+escHtml(prop.section)+', T'+escHtml(prop.township)+', R'+escHtml(prop.range)+'<br>':'')
+        +(prop.notes?'<br>'+escHtml(prop.notes):'')
+        +'</div>'
+        +'<div class="calibrate-section"><h3>Plat Calls</h3>'+edgeRows+'</div>'
+        +'<div class="disclaimer">Consumer GPS: 3-16 ft accuracy. Gets you close enough to probe/metal detect for pins. Not a substitute for a licensed survey.</div>';
+}
+
+// =====================================================================
+// GPS
+// =====================================================================
+function toggleGPS() { gpsActive?stopGPS():startGPS(); }
+
+function startGPS() {
+    if(!navigator.geolocation){updateGPSStatus('No GPS available','error');return;}
+    updateGPSStatus('Acquiring...','');
+    if('wakeLock' in navigator){
+        navigator.wakeLock.request('screen').then(function(wl){
+            wakeLock=wl; wl.addEventListener('release',function(){wakeLock=null;});
+        }).catch(function(){});
+    }
+    gpsWatchId=navigator.geolocation.watchPosition(function(pos){
+        userLat=pos.coords.latitude;
+        userLon=pos.coords.longitude;
+        var acc=pos.coords.accuracy;
+        var ac=acc>20?'poor':acc>10?'fair':'good';
+        var al=acc>20?'Poor':acc>10?'Fair':'Good';
+        updateGPSStatus('GPS: <span class="accuracy-badge '+ac+'">'+acc.toFixed(1)+'m ('+al+')</span>','active');
+        updateUserMarker(acc);
+        renderPinList();
         updateNavigation();
+        if(selectedPin&&navigator.vibrate){
+            var c=currentPinCoords[selectedPin];
+            if(c){
+                var d=distanceBetween(userLat,userLon,c.lat,c.lon);
+                var now=Date.now();
+                if(d<=10&&now-lastProximityVibrate>5000){
+                    navigator.vibrate([100,50,100,50,200]);
+                    lastProximityVibrate=now;
+                }
+            }
+        }
+        gpsActive=true;
+        document.getElementById('btn-gps').textContent='GPS On';
+        document.getElementById('btn-gps').classList.add('active');
+    },function(err){
+        updateGPSStatus('Error: '+err.message,'error');
+    },{enableHighAccuracy:true,maximumAge:2000,timeout:10000});
+
+    if(window.DeviceOrientationEvent){
+        if(typeof DeviceOrientationEvent.requestPermission==='function'){
+            DeviceOrientationEvent.requestPermission().then(function(r){
+                if(r==='granted')window.addEventListener('deviceorientation',handleOrientation);
+            }).catch(function(){});
+        } else {
+            window.addEventListener('deviceorientation',handleOrientation);
+        }
     }
+}
 
-    function updateUserMarker(acc) {
-        if(!userLat||!userLon)return;
-        if(userMarker){userMarker.setLatLng([userLat,userLon]);}
-        else{userMarker=L.marker([userLat,userLon],{icon:L.divIcon({className:'',html:'<div class="user-marker"></div>',iconSize:[16,16],iconAnchor:[8,8]}),zIndexOffset:1000}).addTo(map);}
-        if(userAccuracyCircle){userAccuracyCircle.setLatLng([userLat,userLon]);userAccuracyCircle.setRadius(acc);}
-        else{userAccuracyCircle=L.circle([userLat,userLon],{radius:acc,fillColor:'#4285f4',fillOpacity:0.15,stroke:true,color:'#4285f4',weight:1,opacity:0.3}).addTo(map);}
-    }
+function stopGPS() {
+    if(gpsWatchId!==null){navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId=null;}
+    window.removeEventListener('deviceorientation',handleOrientation);
+    gpsActive=false;
+    document.getElementById('btn-gps').textContent='GPS Off';
+    document.getElementById('btn-gps').classList.remove('active');
+    updateGPSStatus('GPS off','');
+    if(userMarker){map.removeLayer(userMarker);userMarker=null;}
+    if(userAccuracyCircle){map.removeLayer(userAccuracyCircle);userAccuracyCircle=null;}
+    if(wakeLock){wakeLock.release().catch(function(){});wakeLock=null;}
+}
 
-    function updateGPSStatus(msg,cls){var e=document.getElementById('gps-status');e.innerHTML=msg;e.className='gps-status '+cls;}
+function handleOrientation(e) {
+    if(e.webkitCompassHeading!==undefined)userHeading=e.webkitCompassHeading;
+    else if(e.alpha!==null)userHeading=360-e.alpha;
+    updateNavigation();
+}
 
-    // ==========================================
-    // TABS
-    // ==========================================
-    function switchTab(tabName) {
-        document.querySelectorAll('.panel-tab').forEach(function(t){t.classList.remove('active');});
-        document.querySelectorAll('.panel-content').forEach(function(c){c.classList.remove('active');});
-        document.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
-        document.getElementById('tab-'+tabName).classList.add('active');
-        if(tabName==='navigate')updateNavigation();
-        if(tabName==='calibrate')renderCalibratePanel();
-        // Expand panel if collapsed
-        if(panelCollapsed)togglePanel();
-    }
+function updateUserMarker(acc) {
+    if(!userLat||!userLon)return;
+    if(userMarker)userMarker.setLatLng([userLat,userLon]);
+    else userMarker=L.marker([userLat,userLon],{icon:L.divIcon({className:'',html:'<div class="user-marker"></div>',iconSize:[16,16],iconAnchor:[8,8]}),zIndexOffset:1000}).addTo(map);
+    if(userAccuracyCircle){userAccuracyCircle.setLatLng([userLat,userLon]);userAccuracyCircle.setRadius(acc);}
+    else userAccuracyCircle=L.circle([userLat,userLon],{radius:acc,fillColor:'#4285f4',fillOpacity:0.15,stroke:true,color:'#4285f4',weight:1,opacity:0.3}).addTo(map);
+}
 
-    // ==========================================
-    // INIT
-    // ==========================================
-    loadFromStorage();
-    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initMap);}
-    else{initMap();}
-    </script>
+function updateGPSStatus(msg,cls) {
+    var e=document.getElementById('gps-status');
+    e.innerHTML=msg; e.className='gps-status '+cls;
+}
+
+// =====================================================================
+// TABS
+// =====================================================================
+function switchTab(tabName) {
+    document.querySelectorAll('.panel-tab').forEach(function(t){t.classList.remove('active');});
+    document.querySelectorAll('.panel-content').forEach(function(c){c.classList.remove('active');});
+    document.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
+    document.getElementById('tab-'+tabName).classList.add('active');
+    if(tabName==='navigate')updateNavigation();
+    if(tabName==='anchors') renderAnchorsPanel();
+    if(tabName==='info')    renderInfoPanel();
+    if(panelCollapsed)togglePanel();
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+loadData();
+document.addEventListener('DOMContentLoaded',function(){
+    renderHomeList();
+});
+</script>
 </body>
 </html>
