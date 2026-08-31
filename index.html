@@ -812,9 +812,6 @@ function buildMossyRoadProperty() {
 }
 
 // =====================================================================
-// DATA STORE
-// =====================================================================
-// =====================================================================
 // FIREBASE + DATA STORE
 // localStorage is used as an offline cache/fallback.
 // Firestore is the source of truth — real-time listener keeps all
@@ -892,13 +889,49 @@ function migrateOldPins() {
     } catch(e) { return false; }
 }
 
+// ---- Merge two property lists: keep all unique properties from both ----
+// Firestore wins for properties that exist in both (same id).
+// Properties only in local are added to the merged result.
+function mergeProperties(firestoreProps, localProps) {
+    firestoreProps = firestoreProps || [];
+    localProps = localProps || [];
+    var merged = firestoreProps.slice();
+    var ids = {};
+    firestoreProps.forEach(function(p){ ids[p.id] = true; });
+    localProps.forEach(function(p){
+        if (!ids[p.id]) {
+            merged.push(p);  // local-only property — add it
+        }
+    });
+    return merged;
+}
+
 // ---- Apply fresh data from Firestore (or localStorage) ----
-function applyData(data) {
-    if (data) appData = data;
+function applyData(firestoreData, localData) {
+    if (firestoreData) {
+        // Merge: keep everything from Firestore, plus any local-only properties
+        firestoreData.properties = mergeProperties(
+            firestoreData.properties,
+            localData ? localData.properties : []
+        );
+        appData = firestoreData;
+    }
+    // else: stay with whatever is already in appData (localStorage fallback)
+
     var needsSave = false;
     needsSave = ensureBuiltin() || needsSave;
     needsSave = migrateOldPins() || needsSave;
+
+    // If merge added local-only properties, push the merged state back to Firestore
+    if (firestoreData && localData) {
+        var localIds = (localData.properties||[]).map(function(p){return p.id;});
+        var firestoreIds = ((firestoreData.properties||[])).map(function(p){return p.id;});
+        var hasLocalOnly = localIds.some(function(id){ return firestoreIds.indexOf(id) === -1; });
+        if (hasLocalOnly) needsSave = true;
+    }
+
     if (needsSave) saveData();
+
     // Refresh UI
     renderHomeList();
     // If we're already looking at a property, refresh the map view too
@@ -910,31 +943,36 @@ function applyData(data) {
 
 // ---- Initial load: try Firestore first, fall back to localStorage ----
 function loadData() {
-    // Seed from localStorage immediately so the UI isn't blank while Firestore loads
+    // Read localStorage first so UI is instant while Firestore loads
+    var localData = null;
     try {
         var raw = localStorage.getItem('surveyAppData');
-        if (raw) appData = JSON.parse(raw);
+        if (raw) localData = JSON.parse(raw);
     } catch(e) {}
-    ensureBuiltin();
 
-    // Start real-time listener — fires immediately with current data,
-    // then again whenever any device saves.
+    // Seed UI from localStorage immediately (no blank screen)
+    if (localData) appData = localData;
+    ensureBuiltin();
+    renderHomeList();
+
+    // Start real-time Firestore listener
     setSyncBadge('syncing', 'Connecting...');
     firestoreUnsubscribe = DOC_REF.onSnapshot(function(doc) {
         if (doc.exists) {
             setSyncBadge('synced', 'Synced');
-            applyData(doc.data());
+            // Merge Firestore data with local, so nothing is lost
+            applyData(doc.data(), localData);
+            localData = null; // only merge once on first snapshot
         } else {
-            // First time — no cloud doc yet. Save local state up.
+            // No cloud doc yet — upload everything from localStorage
             setSyncBadge('syncing', 'Uploading...');
-            applyData(null);
+            applyData(null, null);
             saveData();
         }
     }, function(err) {
         console.warn('Firestore listener error:', err);
         setSyncBadge('offline', 'Offline');
-        // Fall back to whatever we loaded from localStorage
-        applyData(null);
+        applyData(null, null);
     });
 }
 
