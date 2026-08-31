@@ -338,6 +338,43 @@
 
         /* Tag chip */
         .chip { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; background: #0f3460; color: #aaa; margin: 2px; }
+
+        /* ==================== POTENTIAL PINS ==================== */
+        .pin-marker.potential {
+            background: #b8860b; border-color: #f0c040;
+            box-shadow: 0 0 8px rgba(240,192,64,0.7);
+        }
+        .pin-icon.potential { background: #b8860b; border-color: #f0c040; }
+        .pin-source.potential { color: #f0c040; }
+
+        .potpin-item {
+            display: flex; align-items: center; padding: 8px;
+            margin-bottom: 4px; background: #1a1a2e; border-radius: 6px;
+            border: 1px solid #2a2a1e;
+        }
+        .potpin-item:hover { background: #1e1e10; border-color: #b8860b; }
+        .potpin-item.selected { background: #1e1e10; border-color: #f0c040; }
+
+        .potpin-add-box {
+            background: #1a1a2e; border-radius: 8px; padding: 10px; margin-bottom: 10px;
+        }
+        .potpin-add-box h3 { font-size: 13px; color: #f0c040; margin-bottom: 6px; }
+        .potpin-add-box p  { font-size: 10px; color: #888; margin-bottom: 8px; line-height: 1.5; }
+        .potpin-add-row { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 6px; }
+        .potpin-add-row input { flex:1; padding:6px 8px; background:#16213e; border:1px solid #0f3460; border-radius:5px; color:#e0e0e0; font-size:12px; font-family:monospace; }
+        .potpin-add-row input:focus { outline:none; border-color:#f0c040; }
+        .potpin-parse-error { font-size:11px; color:#e94560; margin-bottom:6px; }
+        .potpin-parse-ok    { font-size:11px; color:#4ecca3; margin-bottom:6px; }
+
+        .potpin-list-section h3 { font-size:13px; color:#f0c040; margin-bottom:6px; }
+
+        /* How-to instruction box */
+        .howto-box {
+            background: #16213e; border: 1px solid #2a2a3e; border-radius:6px;
+            padding:8px 10px; font-size:11px; color:#aaa; line-height:1.6; margin-bottom:10px;
+        }
+        .howto-box b { color:#f0c040; }
+        .howto-box code { background:#0f3460; padding:1px 4px; border-radius:3px; font-size:10px; color:#4ecca3; }
     </style>
 </head>
 <body>
@@ -376,10 +413,11 @@
     <div class="bottom-panel expanded" id="bottom-panel">
         <div class="panel-header">
             <div class="panel-tabs">
-                <button class="panel-tab active" data-tab="pins"     onclick="switchTab('pins')">Pins</button>
-                <button class="panel-tab"         data-tab="navigate" onclick="switchTab('navigate')">Navigate</button>
-                <button class="panel-tab"         data-tab="anchors"  onclick="switchTab('anchors')">Anchors</button>
-                <button class="panel-tab"         data-tab="info"     onclick="switchTab('info')">Info</button>
+                <button class="panel-tab active" data-tab="pins"      onclick="switchTab('pins')">Pins</button>
+                <button class="panel-tab"         data-tab="navigate"  onclick="switchTab('navigate')">Navigate</button>
+                <button class="panel-tab"         data-tab="potential" onclick="switchTab('potential')">Potential</button>
+                <button class="panel-tab"         data-tab="anchors"   onclick="switchTab('anchors')">Anchors</button>
+                <button class="panel-tab"         data-tab="info"      onclick="switchTab('info')">Info</button>
             </div>
             <button class="collapse-btn" id="collapse-btn" onclick="togglePanel()">&#9660;</button>
         </div>
@@ -393,6 +431,32 @@
             <div id="tab-navigate" class="panel-content">
                 <div class="nav-display" id="nav-display">
                     <div style="color:#888;padding:15px;">Select a pin to navigate</div>
+                </div>
+            </div>
+
+            <div id="tab-potential" class="panel-content">
+                <div class="potpin-add-box">
+                    <h3>Add Potential Pin from Google Maps</h3>
+                    <div class="howto-box">
+                        <b>How to get coordinates from Google Maps:</b><br>
+                        1. Open Google Maps on your phone<br>
+                        2. Long-press any spot on the map (property corner)<br>
+                        3. Tap the coordinates that appear at the bottom<br>
+                        4. Tap <b>Share</b> &rarr; copy the link, OR just note the lat/lon shown<br>
+                        5. Paste the link OR the coordinates below<br>
+                        <br>
+                        Accepts: <code>35.6171, -93.9071</code> &bull; Google Maps share URL &bull; DMS like <code>35°37'1"N 93°54'26"W</code>
+                    </div>
+                    <div class="potpin-add-row">
+                        <input type="text" id="potpin-name" placeholder="Pin label (e.g. NW Corner)" style="max-width:130px;" />
+                        <input type="text" id="potpin-coord" placeholder="Paste coords or Google Maps URL" />
+                        <button class="btn primary small" onclick="addPotentialPin()" style="white-space:nowrap;">Add</button>
+                    </div>
+                    <div id="potpin-parse-msg"></div>
+                </div>
+                <div class="potpin-list-section">
+                    <h3>Potential Pins <span id="potpin-count" class="chip" style="background:#b8860b;color:#fff;">0</span></h3>
+                    <div id="potpin-list"></div>
                 </div>
             </div>
 
@@ -1367,7 +1431,9 @@ function refreshAll() {
     currentPinCoords=calcPinsForProperty(prop);
     drawPins();
     drawBoundary();
+    drawPotentialPinMarkers();
     renderPinList();
+    renderPotentialPinList();
     renderAnchorsPanel();
     renderInfoPanel();
     updateNavigation();
@@ -1424,37 +1490,61 @@ function drawBoundary() {
 function renderPinList() {
     var list=document.getElementById('pin-list');
     var pins=getPinsArray();
-    if(pins.length===0){
-        list.innerHTML='<div style="color:#555;font-size:12px;padding:12px;text-align:center;">No pins computed yet.<br>Add plat calls and set an anchor.</div>';
+    var potPins=getPotentialPins();
+
+    // Build unified list with type flag
+    var allPins = pins.map(function(p){ return {lat:p.lat,lon:p.lon,type:'regular',data:p}; });
+    potPins.forEach(function(p){ allPins.push({lat:p.lat,lon:p.lon,type:'potential',data:p}); });
+
+    if(allPins.length===0){
+        list.innerHTML='<div style="color:#555;font-size:12px;padding:12px;text-align:center;">No pins yet.<br>Add plat calls &amp; an anchor, or add Potential Pins.</div>';
         return;
     }
     if(userLat!==null){
-        pins.sort(function(a,b){
+        allPins.sort(function(a,b){
             return distanceBetween(userLat,userLon,a.lat,a.lon)-distanceBetween(userLat,userLon,b.lat,b.lon);
         });
+    } else {
+        // Potential pins at bottom if no GPS
+        allPins.sort(function(a,b){ return a.type==='potential'?1:b.type==='potential'?-1:0; });
     }
+
     var html='';
-    for(var i=0;i<pins.length;i++){
-        var pin=pins[i];
-        var sel=selectedPin===pin.name;
+    for(var i=0;i<allPins.length;i++){
+        var item=allPins[i];
         var dh='';
         if(userLat!==null){
-            var dist=distanceBetween(userLat,userLon,pin.lat,pin.lon);
-            var brn=bearingBetween(userLat,userLon,pin.lat,pin.lon);
+            var dist=distanceBetween(userLat,userLon,item.lat,item.lon);
+            var brn=bearingBetween(userLat,userLon,item.lat,item.lon);
             dh='<div class="pin-distance"><div class="dist">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="unit">ft</div><div class="bearing">'+formatBearing(brn).split('(')[0].trim()+'</div></div>';
         }
-        var sc=pin.isKnown?'known':'computed';
-        var sl=pin.isKnown?'GPS Anchor':(pin.source==='averaged'?'Averaged':'Computed');
-        var pinCls='pin-icon'+(pin.isKnown?' known':'');
-        var abbrev=pin.name.split(/[\s\-]/)[0].slice(0,4);
-        var safeName=pin.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        html+='<div class="pin-item'+(sel?' selected':'')+'\" onclick="selectPinByName(\''+safeName+'\')">'
-             +'<div class="'+pinCls+'">'+escHtml(abbrev)+'</div>'
-             +'<div class="pin-info">'
-             +'<div class="pin-name">'+escHtml(pin.name)+'</div>'
-             +'<div class="pin-coords">'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div>'
-             +'<div class="pin-source '+sc+'">'+sl+'</div>'
-             +'</div>'+dh+'</div>';
+        if(item.type==='potential'){
+            var pp=item.data;
+            var sel=selectedPin==='pp:'+pp.id;
+            var safe=pp.id.replace(/'/g,"\\'");
+            html+='<div class="pin-item'+(sel?' selected':'')+'\" onclick="selectPotentialPin(\''+safe+'\')">'
+                 +'<div class="pin-icon potential">P</div>'
+                 +'<div class="pin-info">'
+                 +'<div class="pin-name" style="color:#f0c040;">'+escHtml(pp.name)+'</div>'
+                 +'<div class="pin-coords">'+pp.lat.toFixed(6)+', '+pp.lon.toFixed(6)+'</div>'
+                 +'<div class="pin-source potential">Potential Pin</div>'
+                 +'</div>'+dh+'</div>';
+        } else {
+            var pin=item.data;
+            var sel=selectedPin===pin.name;
+            var sc=pin.isKnown?'known':'computed';
+            var sl=pin.isKnown?'GPS Anchor':(pin.source==='averaged'?'Averaged':'Computed');
+            var pinCls='pin-icon'+(pin.isKnown?' known':'');
+            var abbrev=pin.name.split(/[\s\-]/)[0].slice(0,4);
+            var safeName=pin.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+            html+='<div class="pin-item'+(sel?' selected':'')+'\" onclick="selectPinByName(\''+safeName+'\')">'
+                 +'<div class="'+pinCls+'">'+escHtml(abbrev)+'</div>'
+                 +'<div class="pin-info">'
+                 +'<div class="pin-name">'+escHtml(pin.name)+'</div>'
+                 +'<div class="pin-coords">'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div>'
+                 +'<div class="pin-source '+sc+'">'+sl+'</div>'
+                 +'</div>'+dh+'</div>';
+        }
     }
     list.innerHTML=html;
 }
@@ -1473,13 +1563,29 @@ function selectPinByName(name) {
 function updateNavigation() {
     var display=document.getElementById('nav-display');
     if(!selectedPin){display.innerHTML='<div style="color:#888;padding:15px;">Select a pin to navigate</div>';return;}
-    var c=currentPinCoords[selectedPin];
-    if(!c){display.innerHTML='<div style="color:#888;padding:15px;">Pin not computed</div>';return;}
-    var prop=getActiveProperty();
-    var isKnown=prop&&(prop.knownPins||{})[selectedPin];
-    var sn=isKnown?'<span style="color:#4ecca3">GPS Anchor</span>':'<span style="color:#f0c040">Computed</span>';
+
+    // Determine pin coords and label
+    var c, pinLabel, pinType, sn;
+    if (selectedPin.indexOf('pp:') === 0) {
+        // Potential pin
+        var ppId = selectedPin.slice(3);
+        var potPin = getPotentialPins().find(function(p){return p.id===ppId;});
+        if (!potPin) { display.innerHTML='<div style="color:#888;padding:15px;">Pin not found</div>'; return; }
+        c = {lat: potPin.lat, lon: potPin.lon};
+        pinLabel = potPin.name;
+        sn = '<span style="color:#f0c040">Potential Pin</span>';
+    } else {
+        // Regular computed/known pin
+        c = currentPinCoords[selectedPin];
+        if(!c){display.innerHTML='<div style="color:#888;padding:15px;">Pin not computed</div>';return;}
+        pinLabel = selectedPin;
+        var prop=getActiveProperty();
+        var isKnown=prop&&(prop.knownPins||{})[selectedPin];
+        sn=isKnown?'<span style="color:#4ecca3">GPS Anchor</span>':'<span style="color:#f0c040">Computed</span>';
+    }
+
     if(userLat===null){
-        display.innerHTML='<div class="nav-target-name">'+escHtml(selectedPin)+'</div>'
+        display.innerHTML='<div class="nav-target-name">'+escHtml(pinLabel)+'</div>'
                          +'<div style="color:#888;padding:8px;">Enable GPS to navigate</div>'
                          +'<div class="coord-display">Target: '+c.lat.toFixed(6)+', '+c.lon.toFixed(6)+'</div>';
         return;
@@ -1491,7 +1597,7 @@ function updateNavigation() {
     if(dist<=5)  prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:700;text-align:center;">You are ON the pin! Probe here.</div>';
     else if(dist<=10)prox='<div style="background:#1b4332;color:#4ecca3;padding:6px;border-radius:6px;margin-bottom:6px;font-weight:600;text-align:center;">Within 10 ft - start searching!</div>';
     else if(dist<=25)prox='<div style="background:#3d2e00;color:#f0c040;padding:6px;border-radius:6px;margin-bottom:6px;text-align:center;">Getting close (~'+Math.round(dist)+' ft)</div>';
-    display.innerHTML='<div class="nav-target-name">'+escHtml(selectedPin)+'</div>'
+    display.innerHTML='<div class="nav-target-name">'+escHtml(pinLabel)+'</div>'
         +prox
         +'<div class="nav-compass">'
         +'<span class="direction-label dir-n">N</span><span class="direction-label dir-s">S</span>'
@@ -1512,8 +1618,11 @@ function centerOnUser() {
 
 function centerOnPins() {
     var pins=getPinsArray();
-    if(pins.length===0)return;
-    map.fitBounds(L.latLngBounds(pins.map(function(p){return[p.lat,p.lon];})),{padding:[40,40]});
+    var potPins=getPotentialPins();
+    var all=pins.map(function(p){return[p.lat,p.lon];})
+               .concat(potPins.map(function(p){return[p.lat,p.lon];}));
+    if(all.length===0)return;
+    map.fitBounds(L.latLngBounds(all),{padding:[40,40]});
 }
 
 // =====================================================================
@@ -1682,9 +1791,18 @@ function startGPS() {
         updateGPSStatus('GPS: <span class="accuracy-badge '+ac+'">'+acc.toFixed(1)+'m ('+al+')</span>','active');
         updateUserMarker(acc);
         renderPinList();
+        renderPotentialPinList();
         updateNavigation();
+        // Proximity vibration - works for both regular and potential pins
         if(selectedPin&&navigator.vibrate){
-            var c=currentPinCoords[selectedPin];
+            var c=null;
+            if(selectedPin.indexOf('pp:')=== 0){
+                var ppId=selectedPin.slice(3);
+                var pp=getPotentialPins().find(function(p){return p.id===ppId;});
+                if(pp) c={lat:pp.lat,lon:pp.lon};
+            } else {
+                c=currentPinCoords[selectedPin];
+            }
             if(c){
                 var d=distanceBetween(userLat,userLon,c.lat,c.lon);
                 var now=Date.now();
@@ -1744,6 +1862,243 @@ function updateGPSStatus(msg,cls) {
 }
 
 // =====================================================================
+// POTENTIAL PINS - LAT/LON PARSER
+// Handles:
+//   35.6171, -93.9071
+//   35.6171 -93.9071
+//   35°37'1"N 93°54'26"W
+//   https://maps.app.goo.gl/...   (share link - extracts from redirect URL)
+//   https://www.google.com/maps?q=35.6171,-93.9071
+//   https://www.google.com/maps/@35.6171,-93.9071,17z
+//   https://maps.google.com/maps?ll=35.6171,-93.9071
+// =====================================================================
+
+function parseLatLon(input) {
+    if (!input) return null;
+    input = input.trim();
+
+    // --- Google Maps full URL patterns ---
+    // @lat,lon,zoom
+    var m = input.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
+
+    // ?q=lat,lon  or  ll=lat,lon  or  daddr=lat,lon
+    m = input.match(/[?&](?:q|ll|daddr)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
+
+    // place URL: /place/.../@lat,lon
+    m = input.match(/\/place\/[^@]*@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (m) return {lat:parseFloat(m[1]), lon:parseFloat(m[2])};
+
+    // --- Short share URLs (maps.app.goo.gl) - can't resolve server-side, guide user ---
+    if (input.match(/maps\.app\.goo\.gl/)) {
+        return {error: 'SHORT_URL'};
+    }
+
+    // --- Decimal degrees: "35.6171, -93.9071" or "35.6171 -93.9071" ---
+    m = input.match(/^(-?\d+\.\d+)\s*[,\s]\s*(-?\d+\.\d+)$/);
+    if (m) {
+        var la = parseFloat(m[1]), lo = parseFloat(m[2]);
+        if (la >= -90 && la <= 90 && lo >= -180 && lo <= 180) return {lat:la, lon:lo};
+    }
+
+    // --- DMS: 35°37'1"N  93°54'26"W  (with optional spaces) ---
+    m = input.match(/(\d+)[°\s]+(\d+)['\s]+(\d+(?:\.\d+)?)["\s]*([NS])\s+(\d+)[°\s]+(\d+)['\s]+(\d+(?:\.\d+)?)["\s]*([EW])/i);
+    if (m) {
+        var latDeg = parseFloat(m[1]) + parseFloat(m[2])/60 + parseFloat(m[3])/3600;
+        if (m[4].toUpperCase()==='S') latDeg = -latDeg;
+        var lonDeg = parseFloat(m[5]) + parseFloat(m[6])/60 + parseFloat(m[7])/3600;
+        if (m[8].toUpperCase()==='W') lonDeg = -lonDeg;
+        return {lat:latDeg, lon:lonDeg};
+    }
+
+    // --- DMS reversed: N35°37'1"  W93°54'26" ---
+    m = input.match(/([NS])\s*(\d+)[°\s]+(\d+)['\s]+(\d+(?:\.\d+)?)["\s]*\s+([EW])\s*(\d+)[°\s]+(\d+)['\s]+(\d+(?:\.\d+)?)/i);
+    if (m) {
+        var latDeg2 = parseFloat(m[2]) + parseFloat(m[3])/60 + parseFloat(m[4])/3600;
+        if (m[1].toUpperCase()==='S') latDeg2 = -latDeg2;
+        var lonDeg2 = parseFloat(m[6]) + parseFloat(m[7])/60 + parseFloat(m[8])/3600;
+        if (m[5].toUpperCase()==='W') lonDeg2 = -lonDeg2;
+        return {lat:latDeg2, lon:lonDeg2};
+    }
+
+    return null;
+}
+
+// =====================================================================
+// POTENTIAL PINS - STORAGE HELPERS
+// Stored in prop.potentialPins = [{id, name, lat, lon}]
+// =====================================================================
+
+function getPotentialPins() {
+    var prop = getActiveProperty();
+    if (!prop) return [];
+    if (!prop.potentialPins) prop.potentialPins = [];
+    return prop.potentialPins;
+}
+
+// =====================================================================
+// POTENTIAL PINS - ADD
+// =====================================================================
+function addPotentialPin() {
+    var nameEl  = document.getElementById('potpin-name');
+    var coordEl = document.getElementById('potpin-coord');
+    var msgEl   = document.getElementById('potpin-parse-msg');
+    msgEl.textContent = '';
+
+    var name  = nameEl.value.trim();
+    var input = coordEl.value.trim();
+
+    if (!input) { msgEl.className='potpin-parse-error'; msgEl.textContent='Paste coordinates or a Google Maps URL.'; return; }
+
+    var result = parseLatLon(input);
+
+    if (!result) {
+        msgEl.className='potpin-parse-error';
+        msgEl.textContent='Could not parse coordinates. Try: 35.6171, -93.9071  or paste a Google Maps link.';
+        return;
+    }
+
+    if (result.error === 'SHORT_URL') {
+        msgEl.className='potpin-parse-error';
+        msgEl.innerHTML='Short links (maps.app.goo.gl) can\'t be resolved automatically.<br>'
+                       +'<b>Fix:</b> In Google Maps, after long-pressing, tap the coordinates shown at the bottom of the screen to copy the raw <code>lat, lon</code> numbers directly.';
+        return;
+    }
+
+    // Validate range
+    if (result.lat < -90 || result.lat > 90 || result.lon < -180 || result.lon > 180) {
+        msgEl.className='potpin-parse-error'; msgEl.textContent='Coordinates out of range.'; return;
+    }
+
+    if (!name) name = 'Potential Pin ' + (getPotentialPins().length + 1);
+
+    var prop = getActiveProperty();
+    if (!prop) return;
+    if (!prop.potentialPins) prop.potentialPins = [];
+
+    prop.potentialPins.push({
+        id: 'pp-' + Date.now(),
+        name: name,
+        lat: result.lat,
+        lon: result.lon
+    });
+    saveData();
+
+    msgEl.className='potpin-parse-ok';
+    msgEl.textContent='Added: ' + name + ' (' + result.lat.toFixed(6) + ', ' + result.lon.toFixed(6) + ')';
+
+    nameEl.value  = '';
+    coordEl.value = '';
+
+    renderPotentialPinList();
+    drawPotentialPinMarkers();
+
+    // Zoom map to the new pin
+    if (map) map.setView([result.lat, result.lon], Math.max(map.getZoom()||17, 17));
+}
+
+// =====================================================================
+// POTENTIAL PINS - REMOVE
+// =====================================================================
+function removePotentialPin(id) {
+    var prop = getActiveProperty();
+    if (!prop || !prop.potentialPins) return;
+    prop.potentialPins = prop.potentialPins.filter(function(p){ return p.id !== id; });
+    saveData();
+    renderPotentialPinList();
+    drawPotentialPinMarkers();
+    // If this was the selected pin, clear navigation
+    if (selectedPin === 'pp:' + id) {
+        selectedPin = null;
+        updateNavigation();
+        renderPinList();
+    }
+}
+
+// =====================================================================
+// POTENTIAL PINS - RENDER LIST IN TAB
+// =====================================================================
+function renderPotentialPinList() {
+    var pins = getPotentialPins();
+    var countEl = document.getElementById('potpin-count');
+    var listEl  = document.getElementById('potpin-list');
+    if (!countEl || !listEl) return;
+    countEl.textContent = pins.length;
+
+    if (pins.length === 0) {
+        listEl.innerHTML = '<div style="color:#555;font-size:12px;padding:12px;text-align:center;">No potential pins added yet.<br>Use the form above to add corners from Google Maps.</div>';
+        return;
+    }
+
+    var html = '';
+    for (var i = 0; i < pins.length; i++) {
+        var pin = pins[i];
+        var sel = selectedPin === 'pp:' + pin.id;
+        var dh = '';
+        if (userLat !== null) {
+            var dist = distanceBetween(userLat, userLon, pin.lat, pin.lon);
+            var brn  = bearingBetween(userLat, userLon, pin.lat, pin.lon);
+            dh = '<div class="pin-distance"><div class="dist">'+(dist<100?dist.toFixed(1):Math.round(dist))+'</div><div class="unit">ft</div><div class="bearing">'+formatBearing(brn).split('(')[0].trim()+'</div></div>';
+        }
+        var safe = pin.id.replace(/'/g,"\\'");
+        html += '<div class="potpin-item'+(sel?' selected':'')+'\">'
+              + '<div class="pin-icon potential" style="cursor:pointer;flex-shrink:0;" onclick="selectPotentialPin(\''+safe+'\')">P</div>'
+              + '<div class="pin-info" style="cursor:pointer;" onclick="selectPotentialPin(\''+safe+'\')">'
+              + '<div class="pin-name" style="color:#f0c040;">'+escHtml(pin.name)+'</div>'
+              + '<div class="pin-coords">'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</div>'
+              + '<div class="pin-source potential">Potential Pin</div>'
+              + '</div>'
+              + dh
+              + '<button class="btn danger small" onclick="removePotentialPin(\''+safe+'\')" style="margin-left:6px;flex-shrink:0;">&times;</button>'
+              + '</div>';
+    }
+    listEl.innerHTML = html;
+}
+
+// =====================================================================
+// POTENTIAL PINS - MARKERS ON MAP
+// =====================================================================
+var potPinMarkers = [];
+
+function drawPotentialPinMarkers() {
+    for (var i = 0; i < potPinMarkers.length; i++) map.removeLayer(potPinMarkers[i]);
+    potPinMarkers = [];
+    if (!map) return;
+    var pins = getPotentialPins();
+    for (var i = 0; i < pins.length; i++) {
+        (function(pin) {
+            var icon = L.divIcon({
+                className: '',
+                html: '<div class="pin-marker potential">P</div>',
+                iconSize: [28,28], iconAnchor: [14,14]
+            });
+            var marker = L.marker([pin.lat, pin.lon], {icon:icon})
+                .addTo(map)
+                .bindPopup('<b style="color:#f0c040;">'+escHtml(pin.name)+'</b><br>'
+                          +'<small>'+pin.lat.toFixed(6)+', '+pin.lon.toFixed(6)+'</small><br>'
+                          +'<small style="color:#f0c040;">Potential Pin</small>');
+            marker.on('click', function(){ selectPotentialPin(pin.id); });
+            potPinMarkers.push(marker);
+        })(pins[i]);
+    }
+}
+
+// =====================================================================
+// POTENTIAL PINS - SELECT & NAVIGATE
+// =====================================================================
+function selectPotentialPin(id) {
+    selectedPin = 'pp:' + id;
+    renderPotentialPinList();
+    renderPinList(); // update selection highlight in pins tab too
+    updateNavigation();
+    var pin = getPotentialPins().find(function(p){ return p.id === id; });
+    if (pin && map) map.setView([pin.lat, pin.lon], Math.max(map.getZoom()||17, 17));
+    // Switch to navigate tab for convenience
+    switchTab('navigate');
+}
+
+// =====================================================================
 // TABS
 // =====================================================================
 function switchTab(tabName) {
@@ -1751,10 +2106,11 @@ function switchTab(tabName) {
     document.querySelectorAll('.panel-content').forEach(function(c){c.classList.remove('active');});
     document.querySelector('[data-tab="'+tabName+'"]').classList.add('active');
     document.getElementById('tab-'+tabName).classList.add('active');
-    if(tabName==='navigate')updateNavigation();
-    if(tabName==='anchors') renderAnchorsPanel();
-    if(tabName==='info')    renderInfoPanel();
-    if(panelCollapsed)togglePanel();
+    if(tabName==='navigate') updateNavigation();
+    if(tabName==='anchors')  renderAnchorsPanel();
+    if(tabName==='info')     renderInfoPanel();
+    if(tabName==='potential') renderPotentialPinList();
+    if(panelCollapsed) togglePanel();
 }
 
 // =====================================================================
