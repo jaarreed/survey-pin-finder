@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Survey Pin Finder</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Firebase SDK (compat v9 — works without a bundler) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -339,6 +342,15 @@
         /* Tag chip */
         .chip { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; background: #0f3460; color: #aaa; margin: 2px; }
 
+        /* ==================== SYNC STATUS ==================== */
+        .sync-badge {
+            font-size: 10px; padding: 2px 7px; border-radius: 8px;
+            font-weight: 600; flex-shrink: 0;
+        }
+        .sync-badge.synced  { background: #1b4332; color: #4ecca3; }
+        .sync-badge.syncing { background: #3d2e00; color: #f0c040; }
+        .sync-badge.offline { background: #3d1010; color: #e94560; }
+
         /* ==================== POTENTIAL PINS ==================== */
         .pin-marker.potential {
             background: #b8860b; border-color: #f0c040;
@@ -385,6 +397,7 @@
 <div id="screen-home" class="screen active">
     <div class="header">
         <h1>Survey Pin Finder</h1>
+        <span id="sync-badge" class="sync-badge syncing">Connecting...</span>
     </div>
     <div class="home-list" id="home-list"></div>
     <div class="home-footer">
@@ -801,47 +814,128 @@ function buildMossyRoadProperty() {
 // =====================================================================
 // DATA STORE
 // =====================================================================
-var appData = { properties: [], activePropertyId: null };
+// =====================================================================
+// FIREBASE + DATA STORE
+// localStorage is used as an offline cache/fallback.
+// Firestore is the source of truth — real-time listener keeps all
+// devices in sync automatically.
+// =====================================================================
 
-function saveData() {
-    try { localStorage.setItem('surveyAppData', JSON.stringify(appData)); } catch(e) {}
+var firebaseConfig = {
+    apiKey:            "AIzaSyAWC-9YU3J7113QxJp6rd_zzQ9fa9xgNG8",
+    authDomain:        "survey-pin-finder.firebaseapp.com",
+    projectId:         "survey-pin-finder",
+    storageBucket:     "survey-pin-finder.firebasestorage.app",
+    messagingSenderId: "837084156112",
+    appId:             "1:837084156112:web:46dbed9835818c7ea84ed5"
+};
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+var DOC_REF = db.collection('appData').doc('shared');
+
+var appData = { properties: [], activePropertyId: null };
+var firestoreUnsubscribe = null;  // real-time listener handle
+
+// ---- Sync badge helper ----
+function setSyncBadge(state, text) {
+    var el = document.getElementById('sync-badge');
+    if (!el) return;
+    el.className = 'sync-badge ' + state;
+    el.textContent = text;
 }
 
+// ---- Save to both Firestore and localStorage ----
+function saveData() {
+    // Always keep localStorage in sync as offline cache
+    try { localStorage.setItem('surveyAppData', JSON.stringify(appData)); } catch(e) {}
+    // Push to Firestore
+    setSyncBadge('syncing', 'Saving...');
+    DOC_REF.set(appData)
+        .then(function(){ setSyncBadge('synced', 'Synced'); })
+        .catch(function(err){
+            console.warn('Firestore save failed:', err);
+            setSyncBadge('offline', 'Offline');
+        });
+}
+
+// ---- Ensure the Mossy Road builtin always exists ----
+function ensureBuiltin() {
+    var builtinId = 'mossy-road-builtin';
+    if (!appData.properties) appData.properties = [];
+    if (!appData.properties.find(function(p){ return p.id === builtinId; })) {
+        appData.properties.unshift(buildMossyRoadProperty());
+        return true; // needs save
+    }
+    return false;
+}
+
+// ---- Migrate old per-device localStorage key (one-time) ----
+function migrateOldPins() {
+    try {
+        var oldPins = localStorage.getItem('surveyPins');
+        if (!oldPins) return false;
+        var parsed = JSON.parse(oldPins);
+        var mossy = appData.properties.find(function(p){ return p.id === 'mossy-road-builtin'; });
+        if (mossy) {
+            var idToName = {1:'NW Corner (POB)',2:'NE Corner',3:'E Mid',4:'W Mid',5:'SW Corner',6:'SE Corner'};
+            for (var k in parsed) {
+                var name = idToName[k];
+                if (name && parsed[k] && parsed[k].lat && parsed[k].lon) {
+                    if (!mossy.knownPins) mossy.knownPins = {};
+                    mossy.knownPins[name] = {lat:parsed[k].lat, lon:parsed[k].lon};
+                }
+            }
+        }
+        localStorage.removeItem('surveyPins');
+        return true; // needs save
+    } catch(e) { return false; }
+}
+
+// ---- Apply fresh data from Firestore (or localStorage) ----
+function applyData(data) {
+    if (data) appData = data;
+    var needsSave = false;
+    needsSave = ensureBuiltin() || needsSave;
+    needsSave = migrateOldPins() || needsSave;
+    if (needsSave) saveData();
+    // Refresh UI
+    renderHomeList();
+    // If we're already looking at a property, refresh the map view too
+    if (appData.activePropertyId && mapInitialized) {
+        currentPinCoords = calcPinsForProperty(getActiveProperty());
+        refreshAll();
+    }
+}
+
+// ---- Initial load: try Firestore first, fall back to localStorage ----
 function loadData() {
+    // Seed from localStorage immediately so the UI isn't blank while Firestore loads
     try {
         var raw = localStorage.getItem('surveyAppData');
         if (raw) appData = JSON.parse(raw);
     } catch(e) {}
+    ensureBuiltin();
 
-    if (!appData.properties) appData.properties = [];
-
-    // Ensure builtin exists
-    var builtinId = 'mossy-road-builtin';
-    if (!appData.properties.find(function(p){ return p.id === builtinId; })) {
-        appData.properties.unshift(buildMossyRoadProperty());
-        saveData();
-    }
-
-    // Migrate old surveyPins key
-    try {
-        var oldPins = localStorage.getItem('surveyPins');
-        if (oldPins) {
-            var parsed = JSON.parse(oldPins);
-            var mossy = appData.properties.find(function(p){ return p.id === builtinId; });
-            if (mossy) {
-                var idToName = {1:'NW Corner (POB)',2:'NE Corner',3:'E Mid',4:'W Mid',5:'SW Corner',6:'SE Corner'};
-                for (var k in parsed) {
-                    var name = idToName[k];
-                    if (name && parsed[k] && parsed[k].lat && parsed[k].lon) {
-                        if (!mossy.knownPins) mossy.knownPins = {};
-                        mossy.knownPins[name] = {lat:parsed[k].lat, lon:parsed[k].lon};
-                    }
-                }
-            }
-            localStorage.removeItem('surveyPins');
+    // Start real-time listener — fires immediately with current data,
+    // then again whenever any device saves.
+    setSyncBadge('syncing', 'Connecting...');
+    firestoreUnsubscribe = DOC_REF.onSnapshot(function(doc) {
+        if (doc.exists) {
+            setSyncBadge('synced', 'Synced');
+            applyData(doc.data());
+        } else {
+            // First time — no cloud doc yet. Save local state up.
+            setSyncBadge('syncing', 'Uploading...');
+            applyData(null);
             saveData();
         }
-    } catch(e) {}
+    }, function(err) {
+        console.warn('Firestore listener error:', err);
+        setSyncBadge('offline', 'Offline');
+        // Fall back to whatever we loaded from localStorage
+        applyData(null);
+    });
 }
 
 function getActiveProperty() {
@@ -2116,9 +2210,8 @@ function switchTab(tabName) {
 // =====================================================================
 // INIT
 // =====================================================================
-loadData();
-document.addEventListener('DOMContentLoaded',function(){
-    renderHomeList();
+document.addEventListener('DOMContentLoaded', function(){
+    loadData();  // starts Firestore listener; listener calls renderHomeList()
 });
 </script>
 </body>
