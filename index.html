@@ -465,6 +465,10 @@
                         <input type="text" id="potpin-coord" placeholder="Paste coords or Google Maps URL" />
                         <button class="btn primary small" onclick="addPotentialPin()" style="white-space:nowrap;">Add</button>
                     </div>
+                    <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+                        <button class="btn success small" onclick="markCurrentLocationAsPotentialPin()">Mark My Location</button>
+                        <span style="font-size:10px;color:#888;">Turn on GPS, stand at the point, then tap this button.</span>
+                    </div>
                     <div id="potpin-parse-msg"></div>
                 </div>
                 <div class="potpin-list-section">
@@ -2128,6 +2132,41 @@ function addPotentialPin() {
 
     // Zoom map to the new pin
     if (map) map.setView([result.lat, result.lon], Math.max(map.getZoom()||17, 17));
+}
+
+// Save the phone's current live GPS position as a potential pin.
+function markCurrentLocationAsPotentialPin() {
+    var nameEl = document.getElementById('potpin-name');
+    var msgEl = document.getElementById('potpin-parse-msg');
+    msgEl.textContent = '';
+
+    if (userLat === null || userLon === null) {
+        msgEl.className = 'potpin-parse-error';
+        msgEl.textContent = 'Turn on GPS and wait for a location fix before marking a pin.';
+        return;
+    }
+
+    var prop = getActiveProperty();
+    if (!prop) return;
+    if (!prop.potentialPins) prop.potentialPins = [];
+
+    var name = nameEl.value.trim() || 'Potential Pin ' + (prop.potentialPins.length + 1);
+    var pin = {
+        id: 'pp-' + Date.now(),
+        name: name,
+        lat: userLat,
+        lon: userLon
+    };
+
+    prop.potentialPins.push(pin);
+    saveData();
+    nameEl.value = '';
+    renderPotentialPinList();
+    renderPinList();
+    drawPotentialPinMarkers();
+
+    msgEl.className = 'potpin-parse-ok';
+    msgEl.textContent = 'Marked your current location as ' + name + ' (' + userLat.toFixed(6) + ', ' + userLon.toFixed(6) + ').';
 }
 
 // =====================================================================
